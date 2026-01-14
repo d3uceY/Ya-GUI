@@ -1,50 +1,57 @@
 import { useState } from "react"
-import { Edit2, Trash2 } from "lucide-react"
+// import { Edit2, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+    Table,
+    // TableBody, 
+    // TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
+} from "@/components/ui/table"
+// import {
+//   AlertDialog,
+//   AlertDialogAction,
+//   AlertDialogCancel,
+//   AlertDialogContent,
+//   AlertDialogDescription,
+//   AlertDialogTitle,
+//   AlertDialogTrigger,
+// } from "@/components/ui/alert-dialog"
 
 
 export default function ShortcutsPage() {
-  const [shortcutName, setShortcutName] = useState("")
-  const [commandLine, setCommandLine] = useState("")
+    const [shortcutName, setShortcutName] = useState("")
+    const [commandLine, setCommandLine] = useState("")
 
-  const handleAddShortcut = () => {
-    // Logic to add a new shortcut
-  }
+    const handleAddShortcut = () => {
+        // Logic to add a new shortcut
+    }
 
-  return (
-    <div className="flex flex-col h-full p-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-2">ya-gui - Command Alias Manager</h1>
-      </div>
+    return (
+        <div className="flex flex-col h-full p-8">
+            {/* Header */}
+            <div className="mb-8">
+                <h1 className="text-4xl font-bold text-foreground mb-2">ya-gui - Command Alias Manager</h1>
+            </div>
 
-      {/* Shortcuts Table */}
-      <Card className="mb-8 flex-1 flex flex-col">
-        <CardHeader>
-          <CardTitle>Shortcuts</CardTitle>
-        </CardHeader>
-        <CardContent className="flex-1 overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-48">Shortcut</TableHead>
-                <TableHead className="flex-1">Command</TableHead>
-                <TableHead className="w-24 text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            {/* <TableBody>
+            {/* Shortcuts Table */}
+            <Card className="mb-8 flex-1 flex flex-col">
+                <CardHeader>
+                    <CardTitle>Shortcuts</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 overflow-x-auto">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-48">Shortcut</TableHead>
+                                <TableHead className="flex-1">Command</TableHead>
+                                <TableHead className="w-24 text-right">Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        {/* <TableBody>
               {shortcuts.map((shortcut) => (
                 <TableRow key={shortcut.id}>
                   <TableCell className="font-medium">{shortcut.name}</TableCell>
@@ -80,44 +87,44 @@ export default function ShortcutsPage() {
                 </TableRow>
               ))}
             </TableBody> */}
-          </Table>
-        </CardContent>
-      </Card>
+                    </Table>
+                </CardContent>
+            </Card>
 
-      {/* Add New Shortcut Form */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Add New Shortcut</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Shortcut Name</label>
-            <Input
-              placeholder="Shortcut Name"
-              value={shortcutName}
-              onChange={(e) => setShortcutName(e.target.value)}
-              className="w-full"
-            />
-          </div>
+            {/* Add New Shortcut Form */}
+            <Card>
+                <CardHeader>
+                    <CardTitle>Add New Shortcut</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">Shortcut Name</label>
+                        <Input
+                            placeholder="Shortcut Name"
+                            value={shortcutName}
+                            onChange={(e) => setShortcutName(e.target.value)}
+                            className="w-full"
+                        />
+                    </div>
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Command Line</label>
-            <Input
-              placeholder="Command Line"
-              value={commandLine}
-              onChange={(e) => setCommandLine(e.target.value)}
-              className="w-full"
-            />
-          </div>
+                    <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">Command Line</label>
+                        <Input
+                            placeholder="Command Line"
+                            value={commandLine}
+                            onChange={(e) => setCommandLine(e.target.value)}
+                            className="w-full"
+                        />
+                    </div>
 
-          <Button
-            onClick={handleAddShortcut}
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-6 text-base font-medium"
-          >
-            Add Shortcut
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
-  )
+                    <Button
+                        onClick={handleAddShortcut}
+                        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-6 text-base font-medium"
+                    >
+                        Add Shortcut
+                    </Button>
+                </CardContent>
+            </Card>
+        </div>
+    )
 }
