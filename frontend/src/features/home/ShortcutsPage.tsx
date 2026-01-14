@@ -1,40 +1,75 @@
-import { useState } from "react"
-// import { Edit2, Trash2 } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Edit2, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
     Table,
-    // TableBody, 
-    // TableCell,
+    TableBody,
+    TableCell,
     TableHead,
     TableHeader,
     TableRow
 } from "@/components/ui/table"
-// import {
-//   AlertDialog,
-//   AlertDialogAction,
-//   AlertDialogCancel,
-//   AlertDialogContent,
-//   AlertDialogDescription,
-//   AlertDialogTitle,
-//   AlertDialogTrigger,
-// } from "@/components/ui/alert-dialog"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
+import { GetShortcuts, AddShortcut, RemoveShortcut } from '../../../wailsjs/go/main/App'
 
 
 export default function ShortcutsPage() {
     const [shortcutName, setShortcutName] = useState("")
     const [commandLine, setCommandLine] = useState("")
+    const [shortcuts, setShortcuts] = useState<Record<string, string>>({})
 
-    const handleAddShortcut = () => {
-        // Logic to add a new shortcut
+    // Load shortcuts on component mount
+    useEffect(() => {
+        loadShortcuts()
+    }, [])
+
+    const loadShortcuts = async () => {
+        try {
+            const data = await GetShortcuts()
+            setShortcuts(data)
+        } catch (error) {
+            console.error("Error loading shortcuts:", error)
+        }
     }
+
+    const handleAddShortcut = async () => {
+        try {
+            const updatedShortcuts = await AddShortcut(shortcutName, commandLine)
+            setShortcuts(updatedShortcuts)
+            setShortcutName("")
+            setCommandLine("")
+        } catch (error) {
+            console.error("Error adding shortcut:", error)
+        }
+    }
+
+    const handleRemoveShortcut = async (name: string) => {
+        try {
+            await RemoveShortcut(name)
+            await loadShortcuts()
+        } catch (error) {
+            console.error("Error removing shortcut:", error)
+        }
+    }
+
+    const formattedShortcuts = Object.entries(shortcuts).map(([name, command]) => ({ name, command }))
 
     return (
         <div className="flex flex-col h-full p-8">
             {/* Header */}
             <div className="mb-8">
-                <h1 className="text-4xl font-bold text-foreground mb-2">ya-gui - Command Alias Manager</h1>
+                <h1 className="text-4xl font-bold text-foreground mb-2">Command Alias Manager</h1>
             </div>
 
             {/* Shortcuts Table */}
@@ -51,42 +86,43 @@ export default function ShortcutsPage() {
                                 <TableHead className="w-24 text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
-                        {/* <TableBody>
-              {shortcuts.map((shortcut) => (
-                <TableRow key={shortcut.id}>
-                  <TableCell className="font-medium">{shortcut.name}</TableCell>
-                  <TableCell>{shortcut.command}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex gap-2 justify-end">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:bg-blue-50">
-                        <Edit2 className="w-4 h-4" />
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:bg-red-50">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogTitle>Delete Shortcut</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Are you sure you want to delete "{shortcut.name}"? This action cannot be undone.
-                          </AlertDialogDescription>
-                          <div className="flex gap-3 justify-end">
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              className="bg-red-500 hover:bg-red-600"
-                            >
-                              Delete
-                            </AlertDialogAction>
-                          </div>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody> */}
+                        <TableBody>
+                            {formattedShortcuts.map((shortcut) => (
+                                <TableRow key={shortcut.name}>
+                                    <TableCell className="font-medium">{shortcut.name}</TableCell>
+                                    <TableCell>{shortcut.command}</TableCell>
+                                    <TableCell className="text-right">
+                                        <div className="flex gap-2 justify-end">
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:bg-blue-50">
+                                                <Edit2 className="w-4 h-4" />
+                                            </Button>
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:bg-red-50">
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogTitle>Delete Shortcut</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        Are you sure you want to delete "{shortcut.name}"? This action cannot be undone.
+                                                    </AlertDialogDescription>
+                                                    <div className="flex gap-3 justify-end">
+                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                        <AlertDialogAction
+                                                            className="bg-red-500 hover:bg-red-600"
+                                                            onClick={() => handleRemoveShortcut(shortcut.name)}
+                                                        >
+                                                            Delete
+                                                        </AlertDialogAction>
+                                                    </div>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
                     </Table>
                 </CardContent>
             </Card>

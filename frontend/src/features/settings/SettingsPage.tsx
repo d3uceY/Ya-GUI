@@ -12,7 +12,7 @@ export default function SettingsPage() {
         <div className="flex flex-col h-full p-8 max-w-4xl">
             {/* Header */}
             <div className="mb-8">
-                <h1 className="text-4xl font-bold text-foreground mb-2">ya-gui - Settings</h1>
+                <h1 className="text-4xl font-bold text-foreground mb-2">Settings</h1>
             </div>
 
             {/* General Section */}
