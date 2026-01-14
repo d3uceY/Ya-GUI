@@ -12,15 +12,15 @@ export default function Sidebar() {
   ]
 
   return (
-    <aside className="w-64 border-r border-border bg-background">
+    <aside className="w-64 border-r border-border">
       <div className="flex flex-col h-full">
         {/* Logo Header */}
         <div className="border-b border-border p-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-              Ya
+            <div className="w-10 h-10 rounded-lg flex p-2 items-center justify-center text-white font-bold text-lg">
+              <img src="/ya.png" alt="ya-gui logo" />
             </div>
-            <h1 className="text-xl font-bold text-foreground">ya-gui</h1>
+            <h1 className="text-xl font-bold text-foreground">Ya-GUI</h1>
           </div>
         </div>
 
