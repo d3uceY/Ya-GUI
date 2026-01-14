@@ -12,7 +12,7 @@ export default function Sidebar() {
   ]
 
   return (
-    <aside className="w-64 border-r border-border">
+    <aside className="w-64 border-r border-border bg-[#E7ECF3]">
       <div className="flex flex-col h-full">
         {/* Logo Header */}
         <div className="border-b border-border p-6">
