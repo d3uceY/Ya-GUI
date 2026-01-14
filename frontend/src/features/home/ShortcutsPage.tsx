@@ -1,0 +1,123 @@
+import { useState } from "react"
+import { Edit2, Trash2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
+
+export default function ShortcutsPage() {
+  const [shortcutName, setShortcutName] = useState("")
+  const [commandLine, setCommandLine] = useState("")
+
+  const handleAddShortcut = () => {
+    // Logic to add a new shortcut
+  }
+
+  return (
+    <div className="flex flex-col h-full p-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-foreground mb-2">ya-gui - Command Alias Manager</h1>
+      </div>
+
+      {/* Shortcuts Table */}
+      <Card className="mb-8 flex-1 flex flex-col">
+        <CardHeader>
+          <CardTitle>Shortcuts</CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-48">Shortcut</TableHead>
+                <TableHead className="flex-1">Command</TableHead>
+                <TableHead className="w-24 text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            {/* <TableBody>
+              {shortcuts.map((shortcut) => (
+                <TableRow key={shortcut.id}>
+                  <TableCell className="font-medium">{shortcut.name}</TableCell>
+                  <TableCell>{shortcut.command}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex gap-2 justify-end">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:bg-blue-50">
+                        <Edit2 className="w-4 h-4" />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:bg-red-50">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogTitle>Delete Shortcut</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete "{shortcut.name}"? This action cannot be undone.
+                          </AlertDialogDescription>
+                          <div className="flex gap-3 justify-end">
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              className="bg-red-500 hover:bg-red-600"
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </div>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody> */}
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Add New Shortcut Form */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Add New Shortcut</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">Shortcut Name</label>
+            <Input
+              placeholder="Shortcut Name"
+              value={shortcutName}
+              onChange={(e) => setShortcutName(e.target.value)}
+              className="w-full"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">Command Line</label>
+            <Input
+              placeholder="Command Line"
+              value={commandLine}
+              onChange={(e) => setCommandLine(e.target.value)}
+              className="w-full"
+            />
+          </div>
+
+          <Button
+            onClick={handleAddShortcut}
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-6 text-base font-medium"
+          >
+            Add Shortcut
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
