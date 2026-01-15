@@ -1,9 +1,12 @@
 package utils
 
 import (
+	"context"
 	"encoding/json"
 	"os"
 	"path/filepath"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 func getAppDataDir() (string, error) {
@@ -115,4 +118,38 @@ func IsInvalidString(s string) bool {
 		return true
 	}
 	return false
+}
+
+func ExportShortcuts(context context.Context) error {
+	appDir, err := getAppDataDir()
+
+	if err != nil {
+		return err
+	}
+
+	shortCutpath := filepath.Join(appDir, "shortcuts.json")
+
+	data, err := os.ReadFile(shortCutpath)
+
+	if err != nil {
+		return err
+	}
+
+	path, err := runtime.SaveFileDialog(context, runtime.SaveDialogOptions{
+		Title:           "Export Shortcuts",
+		DefaultFilename: "shortcuts.json",
+		Filters: []runtime.FileFilter{
+			{
+				DisplayName: "JSON Files",
+				Pattern:     "*.json",
+			},
+		},
+	})
+
+	// User cancelled dialog
+	if err != nil || path == "" {
+		return err
+	}
+
+	return os.WriteFile(path, data, 0644)
 }

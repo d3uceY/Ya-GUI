@@ -57,3 +57,7 @@ func (a *App) RemoveShortcut(name string) error {
 	}
 	return nil
 }
+
+func (a *App) ExportShortcuts() error {
+	return utils.ExportShortcuts(a.ctx)
+}
