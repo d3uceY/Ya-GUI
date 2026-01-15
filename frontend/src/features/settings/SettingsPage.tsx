@@ -2,7 +2,7 @@
 import { ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
+// import { Switch } from "@/components/ui/switch"
 import { GetVersion, ImportShortcuts, ExportShortcuts } from "../../../wailsjs/go/main/App"
 import { useState, useEffect } from "react"
 
