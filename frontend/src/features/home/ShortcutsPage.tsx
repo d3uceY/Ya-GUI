@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Edit2, Trash2 } from "lucide-react"
+import { Edit2, Save, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -47,12 +47,13 @@ export default function ShortcutsPage() {
         }
     }
 
-    const handleAddShortcut = async () => {
+    const handleAddShortcut = async (name: string, command: string) => {
         try {
-            const updatedShortcuts = await AddShortcut(shortcutName, commandLine)
+            const updatedShortcuts = await AddShortcut(name, command)
             setShortcuts(updatedShortcuts)
             setShortcutName("")
             setCommandLine("")
+            setisEditing({ name: "", command: "" })
         } catch (error) {
             console.error("Error adding shortcut:", error)
         }
@@ -103,16 +104,23 @@ export default function ShortcutsPage() {
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex gap-2 justify-end">
-                                            <Button
-                                                onClick={() => setisEditing(
-                                                    {
-                                                        name: shortcut.name,
-                                                        command: shortcut.command
-                                                    }
-                                                )}
-                                                variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:bg-blue-50">
-                                                <Edit2 className="w-4 h-4" />
-                                            </Button>
+                                            {isEditing.name === shortcut.name ? (
+                                                <Button
+                                                    onClick={() => setisEditing(
+                                                        {
+                                                            name: shortcut.name,
+                                                            command: shortcut.command
+                                                        }
+                                                    )}
+                                                    variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:bg-blue-50">
+                                                    <Save className="w-4 h-4" />
+                                                </Button>)
+                                                :
+                                                <Button
+                                                    onClick={() => handleAddShortcut(shortcut.name, shortcut.command)}
+                                                    variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:bg-blue-50">
+                                                    <Edit2 className="w-4 h-4" />
+                                                </Button>}
                                             <AlertDialog>
                                                 <AlertDialogTrigger asChild>
                                                     <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:bg-red-50">
@@ -171,7 +179,7 @@ export default function ShortcutsPage() {
                     </div>
 
                     <Button
-                        onClick={handleAddShortcut}
+                        onClick={() => handleAddShortcut(shortcutName, commandLine)}
                         className="w-full bg-blue-500 hover:bg-blue-600 text-white py-6 text-base font-medium"
                     >
                         Add Shortcut
