@@ -50,8 +50,8 @@ export default function SettingsPage() {
             </Card> */}
 
             {/* Data Section */}
-            <Card className="mb-6 border-2 bg-slate-800/50 border-slate-700">
-                <CardHeader className="border-b border-slate-700 bg-slate-900/50">
+            <Card className="mb-6 border-2 bg-slate-800/50 overflow-hidden pt-0 border-slate-700">
+                <CardHeader className="border-b border-slate-700 pt-6 bg-slate-900/50">
                     <CardTitle className="text-xl text-blue-100">Data Management</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6">
@@ -74,8 +74,8 @@ export default function SettingsPage() {
             </Card>
 
             {/* About Section */}
-            <Card className="border-2 bg-slate-800/50 border-slate-700">
-                <CardHeader className="border-b border-slate-700 bg-slate-900/50">
+            <Card className="border-2 bg-slate-800/50 pt-0 overflow-hidden border-slate-700">
+                <CardHeader className="border-b border-slate-700 pt-6 bg-slate-900/50">
                     <CardTitle className="text-xl text-blue-100">About</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6 pt-6">

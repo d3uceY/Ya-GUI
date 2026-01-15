@@ -81,8 +81,8 @@ export default function ShortcutsPage() {
     return (
         <div className="flex flex-col h-full p-8 pt-4 max-w-6xl mx-auto">
             {/* Shortcuts Table */}
-            <Card className="mb-8 flex-1 flex flex-col border-2 bg-slate-800/50 border-slate-700">
-                <CardHeader className="border-b border-slate-700 bg-slate-900/50">
+            <Card className="mb-8 flex-1 pt-0 overflow-hidden flex flex-col border-2 bg-slate-800/50 border-slate-700">
+                <CardHeader className="border-b pt-6 border-slate-700 bg-slate-900/50">
                     <CardTitle className="text-xl text-blue-100">Your Shortcuts</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-x-auto p-0">
@@ -168,8 +168,8 @@ export default function ShortcutsPage() {
             </Card>
 
             {/* Add New Shortcut Form */}
-            <Card className="border-2 bg-slate-800/50 border-slate-700">
-                <CardHeader className="border-b border-slate-700 bg-slate-900/50">
+            <Card className="border-2 bg-slate-800/50 pt-0 overflow-hidden border-slate-700">
+                <CardHeader className="border-b pt-6 border-slate-700 bg-slate-900/50">
                     <CardTitle className="text-xl text-blue-100">Add New Shortcut</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6 pt-6">
