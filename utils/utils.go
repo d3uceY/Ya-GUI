@@ -211,11 +211,8 @@ func ImportShortcuts(context context.Context) error {
 	}
 
 	// merge imported shortcuts into current shortcuts
-	for _, value := range importedShortcuts {
-		_, exists := currentShortcuts[value]
-		if exists == false {
-			currentShortcuts[value] = importedShortcuts[value]
-		}
+	for key, value := range importedShortcuts {
+		currentShortcuts[key] = value
 	}
 
 	// write merged shortcuts back to file
