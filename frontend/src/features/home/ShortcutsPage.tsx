@@ -103,7 +103,14 @@ export default function ShortcutsPage() {
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex gap-2 justify-end">
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:bg-blue-50">
+                                            <Button
+                                                onClick={() => setisEditing(
+                                                    {
+                                                        name: shortcut.name,
+                                                        command: shortcut.command
+                                                    }
+                                                )}
+                                                variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:bg-blue-50">
                                                 <Edit2 className="w-4 h-4" />
                                             </Button>
                                             <AlertDialog>
