@@ -23,6 +23,7 @@ import {
 
 import { GetShortcuts, AddShortcut, RemoveShortcut } from '../../../wailsjs/go/main/App'
 import { ScrollArea } from "@radix-ui/react-scroll-area"
+import { Badge } from "@/components/ui/badge"
 
 
 export default function ShortcutsPage() {
@@ -97,12 +98,12 @@ export default function ShortcutsPage() {
                             <TableBody>
                                 {formattedShortcuts.map((shortcut) => (
                                     <TableRow key={shortcut.name}>
-                                        <TableCell className="font-medium">{shortcut.name}</TableCell>
+                                        <TableCell className=""><Badge variant="secondary" className="font-bold text-base">{shortcut.name}</Badge></TableCell>
                                         <TableCell>
                                             {isEditing.name === shortcut.name ? (
                                                 <Input value={isEditing.command} onChange={(e) => handleEditChange(e)} />
                                             ) : (
-                                                shortcut.command
+                                                <Badge className="font-semibold bg-blue-300 text-black">{shortcut.command}</Badge>
                                             )}
                                         </TableCell>
                                         <TableCell className="text-right">
