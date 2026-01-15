@@ -78,11 +78,6 @@ export default function ShortcutsPage() {
 
     return (
         <div className="flex flex-col h-full p-8">
-            {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-4xl font-bold text-foreground mb-2">Command Alias Manager</h1>
-            </div>
-
             {/* Shortcuts Table */}
             <Card className="mb-8 flex-1 flex flex-col">
                 <CardHeader>

@@ -10,11 +10,6 @@ export default function SettingsPage() {
 
     return (
         <div className="flex flex-col h-full p-8 max-w-4xl">
-            {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-4xl font-bold text-foreground mb-2">Settings</h1>
-            </div>
-
             {/* General Section */}
             <Card className="mb-6">
                 <CardHeader>
