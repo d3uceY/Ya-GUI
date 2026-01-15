@@ -11,7 +11,7 @@ export default function SettingsPage() {
     return (
         <div className="flex flex-col h-full p-8 max-w-4xl">
             {/* General Section */}
-            <Card className="mb-6">
+            <Card className="mb-6 shadow-2xl/15">
                 <CardHeader>
                     <CardTitle>General</CardTitle>
                 </CardHeader>
@@ -28,7 +28,7 @@ export default function SettingsPage() {
             </Card> 
 
             {/* Data Section */}
-            <Card className="mb-6">
+            <Card className="mb-6 shadow-2xl/15">
                 <CardHeader>
                     <CardTitle>Data</CardTitle>
                 </CardHeader>

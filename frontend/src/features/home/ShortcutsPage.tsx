@@ -80,7 +80,7 @@ export default function ShortcutsPage() {
     return (
         <div className="flex flex-col h-full p-8">
             {/* Shortcuts Table */}
-            <Card className="mb-8 flex-1 flex flex-col">
+            <Card className="mb-8 flex-1 flex flex-col shadow-2xl/15">
                 <CardHeader>
                     <CardTitle>Shortcuts</CardTitle>
                 </CardHeader>
@@ -157,7 +157,7 @@ export default function ShortcutsPage() {
             </Card>
 
             {/* Add New Shortcut Form */}
-            <Card>
+            <Card className="shadow-2xl/15">
                 <CardHeader>
                     <CardTitle>Add New Shortcut</CardTitle>
                 </CardHeader>
