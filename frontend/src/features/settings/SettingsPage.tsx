@@ -50,21 +50,21 @@ export default function SettingsPage() {
             </Card> */}
 
             {/* Data Section */}
-            <Card className="mb-6 border-2">
-                <CardHeader className="border-b bg-muted/30">
-                    <CardTitle className="text-xl">Data Management</CardTitle>
+            <Card className="mb-6 border-2 bg-slate-800/50 border-slate-700">
+                <CardHeader className="border-b border-slate-700 bg-slate-900/50">
+                    <CardTitle className="text-xl text-blue-100">Data Management</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Button
                             onClick={handleExportshortcuts}
-                            className="bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-bold shadow-sm border-2 border-transparent hover:border-blue-800"
+                            className="bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-bold shadow-lg shadow-blue-900/50 border-2 border-blue-500 hover:border-blue-400"
                         >
                             Export Shortcuts
                         </Button>
                         <Button
                             onClick={handleImportshortcuts}
-                            className="bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-bold shadow-sm border-2 border-transparent hover:border-blue-800"
+                            className="bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-bold shadow-lg shadow-blue-900/50 border-2 border-blue-500 hover:border-blue-400"
                         >
                             Import Shortcuts
                         </Button>
@@ -74,18 +74,18 @@ export default function SettingsPage() {
             </Card>
 
             {/* About Section */}
-            <Card className="border-2">
-                <CardHeader className="border-b bg-muted/30">
-                    <CardTitle className="text-xl">About</CardTitle>
+            <Card className="border-2 bg-slate-800/50 border-slate-700">
+                <CardHeader className="border-b border-slate-700 bg-slate-900/50">
+                    <CardTitle className="text-xl text-blue-100">About</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6 pt-6">
-                    <div className="flex items-center justify-between py-3 px-4 rounded-lg bg-muted/50">
-                        <span className="text-sm font-bold text-muted-foreground">Version</span>
-                        <span className="text-base font-bold text-foreground">{version}</span>
+                    <div className="flex items-center justify-between py-3 px-4 rounded-lg bg-slate-900/50 border border-slate-700">
+                        <span className="text-sm font-bold text-slate-400">Version</span>
+                        <span className="text-base font-bold text-blue-200">{version}</span>
                     </div>
                     <a
                         href="#"
-                        className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold hover:underline"
+                        className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold hover:underline"
                     >
                         Visit Website
                         <ExternalLink className="w-4 h-4" />

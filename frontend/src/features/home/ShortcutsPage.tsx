@@ -81,25 +81,25 @@ export default function ShortcutsPage() {
     return (
         <div className="flex flex-col h-full p-8 pt-4 max-w-6xl mx-auto">
             {/* Shortcuts Table */}
-            <Card className="mb-8 flex-1 flex flex-col border-2">
-                <CardHeader className="border-b bg-muted/30">
-                    <CardTitle className="text-xl">Your Shortcuts</CardTitle>
+            <Card className="mb-8 flex-1 flex flex-col border-2 bg-slate-800/50 border-slate-700">
+                <CardHeader className="border-b border-slate-700 bg-slate-900/50">
+                    <CardTitle className="text-xl text-blue-100">Your Shortcuts</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-x-auto p-0">
                     <ScrollArea className="h-80">
                         <Table>
                             <TableHeader>
-                                <TableRow className="border-b-2 hover:bg-transparent">
-                                    <TableHead className="w-48 font-bold text-foreground">Shortcut</TableHead>
-                                    <TableHead className="flex-1 font-bold text-foreground">Command</TableHead>
-                                    <TableHead className="w-32 text-right font-bold text-foreground">Actions</TableHead>
+                                <TableRow className="border-b-2 border-slate-700 hover:bg-transparent">
+                                    <TableHead className="w-48 font-bold text-blue-200">Shortcut</TableHead>
+                                    <TableHead className="flex-1 font-bold text-blue-200">Command</TableHead>
+                                    <TableHead className="w-32 text-right font-bold text-blue-200">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {formattedShortcuts.map((shortcut) => (
-                                    <TableRow key={shortcut.name} className="hover:bg-muted/50">
+                                    <TableRow key={shortcut.name} className="hover:bg-slate-900/50 border-b border-slate-700/50">
                                         <TableCell className="py-4">
-                                            <Badge variant="secondary" className="font-bold text-sm px-3 py-1">
+                                            <Badge variant="secondary" className="font-bold text-sm px-3 py-1 bg-blue-900/50 text-blue-200 border border-blue-700">
                                                 {shortcut.name}
                                             </Badge>
                                         </TableCell>
@@ -108,10 +108,10 @@ export default function ShortcutsPage() {
                                                 <Input 
                                                     value={isEditing.command} 
                                                     onChange={(e) => handleEditChange(e)}
-                                                    className="border-2 focus:border-blue-500"
+                                                    className="border-2 border-slate-600 bg-slate-900/50 text-blue-200 focus:border-blue-500"
                                                 />
                                             ) : (
-                                                <code className="px-3 py-1.5 rounded bg-blue-50 text-blue-700 font-mono text-sm border border-blue-200">
+                                                <code className="px-3 py-1.5 rounded bg-slate-900 text-blue-300 font-mono text-sm border border-slate-700">
                                                     {shortcut.command}
                                                 </code>
                                             )}
@@ -121,7 +121,7 @@ export default function ShortcutsPage() {
                                                 {isEditing.name === shortcut.name ? (
                                                     <Button
                                                         onClick={() => handleAddShortcut(isEditing.name, isEditing.command)}
-                                                        variant="ghost" size="icon" className="h-9 w-9 text-blue-600 hover:bg-blue-100 hover:text-blue-700">
+                                                        variant="ghost" size="icon" className="h-9 w-9 text-blue-400 hover:bg-blue-900/50 hover:text-blue-300">
                                                         <Save className="w-4 h-4" />
                                                     </Button>)
                                                     :
@@ -132,22 +132,22 @@ export default function ShortcutsPage() {
                                                                 command: shortcut.command
                                                             }
                                                         )}
-                                                        variant="ghost" size="icon" className="h-9 w-9 text-blue-600 hover:bg-blue-100 hover:text-blue-700">
+                                                        variant="ghost" size="icon" className="h-9 w-9 text-blue-400 hover:bg-blue-900/50 hover:text-blue-300">
                                                         <Edit2 className="w-4 h-4" />
                                                     </Button>}
                                                 <AlertDialog>
                                                     <AlertDialogTrigger asChild>
-                                                        <Button variant="ghost" size="icon" className="h-9 w-9 text-red-600 hover:bg-red-100 hover:text-red-700">
+                                                        <Button variant="ghost" size="icon" className="h-9 w-9 text-red-400 hover:bg-red-900/50 hover:text-red-300">
                                                             <Trash2 className="w-4 h-4" />
                                                         </Button>
                                                     </AlertDialogTrigger>
-                                                    <AlertDialogContent className="border-2">
-                                                        <AlertDialogTitle className="text-xl font-bold">Delete Shortcut</AlertDialogTitle>
-                                                        <AlertDialogDescription className="text-base">
-                                                            Are you sure you want to delete <span className="font-bold text-foreground">"{shortcut.name}"</span>? This action cannot be undone.
+                                                    <AlertDialogContent className="border-2 bg-slate-800 border-slate-700">
+                                                        <AlertDialogTitle className="text-xl font-bold text-blue-100">Delete Shortcut</AlertDialogTitle>
+                                                        <AlertDialogDescription className="text-base text-slate-300">
+                                                            Are you sure you want to delete <span className="font-bold text-blue-200">"{shortcut.name}"</span>? This action cannot be undone.
                                                         </AlertDialogDescription>
                                                         <div className="flex gap-3 justify-end mt-4">
-                                                            <AlertDialogCancel className="border-2">Cancel</AlertDialogCancel>
+                                                            <AlertDialogCancel className="border-2 border-slate-600 bg-slate-900 text-slate-200 hover:bg-slate-800">Cancel</AlertDialogCancel>
                                                             <AlertDialogAction
                                                                 className="bg-red-600 hover:bg-red-700 text-white"
                                                                 onClick={() => handleRemoveShortcut(shortcut.name)}
@@ -168,36 +168,36 @@ export default function ShortcutsPage() {
             </Card>
 
             {/* Add New Shortcut Form */}
-            <Card className="border-2">
-                <CardHeader className="border-b bg-muted/30">
-                    <CardTitle className="text-xl">Add New Shortcut</CardTitle>
+            <Card className="border-2 bg-slate-800/50 border-slate-700">
+                <CardHeader className="border-b border-slate-700 bg-slate-900/50">
+                    <CardTitle className="text-xl text-blue-100">Add New Shortcut</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6 pt-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-sm font-bold text-foreground mb-2">Shortcut Name</label>
+                            <label className="block text-sm font-bold text-blue-200 mb-2">Shortcut Name</label>
                             <Input
                                 placeholder="e.g., gp, dev"
                                 value={shortcutName}
                                 onChange={(e) => setShortcutName(e.target.value)}
-                                className="w-full border-2 focus:border-blue-500 h-11"
+                                className="w-full border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500 h-11"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-foreground mb-2">Command Line</label>
+                            <label className="block text-sm font-bold text-blue-200 mb-2">Command Line</label>
                             <Input
                                 placeholder="e.g., git push, npm run dev"
                                 value={commandLine}
                                 onChange={(e) => setCommandLine(e.target.value)}
-                                className="w-full border-2 focus:border-blue-500 h-11"
+                                className="w-full border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500 h-11"
                             />
                         </div>
                     </div>
 
                     <Button
                         onClick={() => handleAddShortcut(shortcutName, commandLine)}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-bold shadow-sm"
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-bold shadow-lg shadow-blue-900/50 border-2 border-blue-500 hover:border-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={!shortcutName.trim() || !commandLine.trim()}
                     >
                         Add Shortcut

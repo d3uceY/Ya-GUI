@@ -13,13 +13,13 @@ export default function Layout() {
     }
   }
   return (
-    <div className="h-screen bg-[#DCE6F1]">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
       <div className="flex gap-5 p-2">
         <div className="h-12 ">
           <img src="/ya.png" alt="" className="h-full" />
         </div>
         <div className="flex items-center">
-          <h1 className="text-4xl font-bold text-foreground leading-0">| {getPageTitle()}</h1>
+          <h1 className="text-4xl font-bold text-blue-100 leading-0">| {getPageTitle()}</h1>
         </div>
       </div>
       <div className="flex">

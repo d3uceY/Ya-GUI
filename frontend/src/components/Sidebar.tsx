@@ -12,7 +12,7 @@ export default function Sidebar() {
   ]
 
   return (
-    <aside className="w-64 bg-[#DCE6F1]">
+    <aside className="w-64 bg-slate-900/50 border-r border-slate-700/50">
       <div className="flex flex-col h-full">
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-2">
@@ -24,8 +24,8 @@ export default function Sidebar() {
                 <Button
                   variant={isActive ? "default" : "ghost"}
                   className={cn(
-                    "w-full justify-start gap-3 px-4 py-6 text-base",
-                    isActive && "bg-blue-500 hover:bg-blue-600 text-white",
+                    "w-full justify-start gap-3 px-4 py-6 text-base text-blue-200 hover:bg-slate-800/70 hover:text-blue-100",
+                    isActive && "bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-900/50",
                   )}
                 >
                   <Icon className="w-5 h-5" />
