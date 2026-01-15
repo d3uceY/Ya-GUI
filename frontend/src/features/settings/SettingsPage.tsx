@@ -3,11 +3,19 @@ import { ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
-import { GetVersion } from "../../../wailsjs/go/main/App"
+import { GetVersion, ImportShortcuts, ExportShortcuts } from "../../../wailsjs/go/main/App"
 import { useState, useEffect } from "react"
+
 
 export default function SettingsPage() {
     const [version, setVersion] = useState<string>("");
+
+    const handleImportshortcuts = async () => {
+        await ImportShortcuts();
+    }
+    const handleExportshortcuts = async () => {
+        await ExportShortcuts();
+    }
 
     const getVersion = async () => {
         await GetVersion().then((version) => {
@@ -49,13 +57,13 @@ export default function SettingsPage() {
                 <CardContent className="pt-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Button
-                            //   onClick={handleExport}
+                            onClick={handleExportshortcuts}
                             className="bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-bold shadow-sm border-2 border-transparent hover:border-blue-800"
                         >
                             Export Shortcuts
                         </Button>
                         <Button
-                            //   onClick={handleImport}
+                            onClick={handleImportshortcuts}
                             className="bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-bold shadow-sm border-2 border-transparent hover:border-blue-800"
                         >
                             Import Shortcuts
