@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import { GetShortcuts, AddShortcut, RemoveShortcut } from '../../../wailsjs/go/main/App'
-import { ScrollArea } from "@radix-ui/react-scroll-area"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 
 
