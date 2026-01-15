@@ -21,6 +21,7 @@ func main() {
 	err := wails.Run(&options.App{
 		Title:     "Ya GUI",
 		Width:     800,
+		MaxWidth:  800,
 		Height:    600,
 		MinHeight: 400,
 		MinWidth:  800,
