@@ -37,6 +37,12 @@ export default function ShortcutsPage() {
     useEffect(() => {
         loadShortcuts()
     }, [])
+    const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setisEditing((prev) => ({
+            ...prev,
+            command: e.target.value
+        }))
+    }
 
     const loadShortcuts = async () => {
         try {
@@ -97,7 +103,7 @@ export default function ShortcutsPage() {
                                     <TableCell className="font-medium">{shortcut.name}</TableCell>
                                     <TableCell>
                                         {isEditing.name === shortcut.name ? (
-                                            <Input value={isEditing.command} />
+                                            <Input value={isEditing.command} onChange={(e) => handleEditChange(e)} />
                                         ) : (
                                             shortcut.command
                                         )}
@@ -106,7 +112,7 @@ export default function ShortcutsPage() {
                                         <div className="flex gap-2 justify-end">
                                             {isEditing.name === shortcut.name ? (
                                                 <Button
-                                                    onClick={() => handleAddShortcut(shortcut.name, shortcut.command)}
+                                                    onClick={() => handleAddShortcut(isEditing.name, isEditing.command)}
                                                     variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:bg-blue-50">
                                                     <Save className="w-4 h-4" />
                                                 </Button>)
