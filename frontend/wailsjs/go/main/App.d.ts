@@ -4,8 +4,12 @@ import {main} from '../models';
 
 export function AddShortcut(arg1:string,arg2:string):Promise<main.shortcuts>;
 
+export function ExportShortcuts():Promise<void>;
+
 export function GetShortcuts():Promise<main.shortcuts>;
 
 export function GetVersion():Promise<string>;
+
+export function ImportShortcuts():Promise<void>;
 
 export function RemoveShortcut(arg1:string):Promise<void>;

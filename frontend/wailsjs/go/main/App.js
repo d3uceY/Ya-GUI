@@ -6,12 +6,20 @@ export function AddShortcut(arg1, arg2) {
   return window['go']['main']['App']['AddShortcut'](arg1, arg2);
 }
 
+export function ExportShortcuts() {
+  return window['go']['main']['App']['ExportShortcuts']();
+}
+
 export function GetShortcuts() {
   return window['go']['main']['App']['GetShortcuts']();
 }
 
 export function GetVersion() {
   return window['go']['main']['App']['GetVersion']();
+}
+
+export function ImportShortcuts() {
+  return window['go']['main']['App']['ImportShortcuts']();
 }
 
 export function RemoveShortcut(arg1) {
