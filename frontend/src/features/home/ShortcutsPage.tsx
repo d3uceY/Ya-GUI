@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Edit2, Save, Trash2 } from "lucide-react"
+import { Edit, Edit2, Save, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -106,18 +106,18 @@ export default function ShortcutsPage() {
                                         <div className="flex gap-2 justify-end">
                                             {isEditing.name === shortcut.name ? (
                                                 <Button
+                                                    onClick={() => handleAddShortcut(shortcut.name, shortcut.command)}
+                                                    variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:bg-blue-50">
+                                                    <Save className="w-4 h-4" />
+                                                </Button>)
+                                                :
+                                                <Button
                                                     onClick={() => setisEditing(
                                                         {
                                                             name: shortcut.name,
                                                             command: shortcut.command
                                                         }
                                                     )}
-                                                    variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:bg-blue-50">
-                                                    <Save className="w-4 h-4" />
-                                                </Button>)
-                                                :
-                                                <Button
-                                                    onClick={() => handleAddShortcut(shortcut.name, shortcut.command)}
                                                     variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:bg-blue-50">
                                                     <Edit2 className="w-4 h-4" />
                                                 </Button>}
