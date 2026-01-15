@@ -12,7 +12,7 @@ export default function Sidebar() {
   ]
 
   return (
-    <aside className="w-64 bg-[#E7ECF3]">
+    <aside className="w-64 bg-[#DCE6F1]">
       <div className="flex flex-col h-full">
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-2">
