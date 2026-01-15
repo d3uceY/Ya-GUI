@@ -10,8 +10,8 @@ export function GetShortcuts() {
   return window['go']['main']['App']['GetShortcuts']();
 }
 
-export function Greet(arg1) {
-  return window['go']['main']['App']['Greet'](arg1);
+export function GetVersion() {
+  return window['go']['main']['App']['GetVersion']();
 }
 
 export function RemoveShortcut(arg1) {

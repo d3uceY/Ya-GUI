@@ -28,6 +28,10 @@ export default function ShortcutsPage() {
     const [shortcutName, setShortcutName] = useState("")
     const [commandLine, setCommandLine] = useState("")
     const [shortcuts, setShortcuts] = useState<Record<string, string>>({})
+    const [isEditing, setisEditing] = useState({
+        name: "",
+        command: ""
+    })
 
     // Load shortcuts on component mount
     useEffect(() => {
@@ -90,7 +94,13 @@ export default function ShortcutsPage() {
                             {formattedShortcuts.map((shortcut) => (
                                 <TableRow key={shortcut.name}>
                                     <TableCell className="font-medium">{shortcut.name}</TableCell>
-                                    <TableCell>{shortcut.command}</TableCell>
+                                    <TableCell>
+                                        {isEditing.name === shortcut.name ? (
+                                            <Input value={isEditing.command} />
+                                        ) : (
+                                            shortcut.command
+                                        )}
+                                    </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex gap-2 justify-end">
                                             <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:bg-blue-50">

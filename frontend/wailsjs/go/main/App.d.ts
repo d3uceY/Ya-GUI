@@ -6,6 +6,6 @@ export function AddShortcut(arg1:string,arg2:string):Promise<main.shortcuts>;
 
 export function GetShortcuts():Promise<main.shortcuts>;
 
-export function Greet(arg1:string):Promise<string>;
+export function GetVersion():Promise<string>;
 
 export function RemoveShortcut(arg1:string):Promise<void>;
