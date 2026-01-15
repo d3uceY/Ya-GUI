@@ -31,7 +31,7 @@ export default function SettingsPage() {
     return (
         <div className="flex flex-col h-full p-8 pt-4 max-w-4xl mx-auto">
             {/* General Section */}
-            <Card className="mb-6 border-2">
+            {/* <Card className="mb-6 border-2">
                 <CardHeader className="border-b bg-muted/30">
                     <CardTitle className="text-xl">General</CardTitle>
                 </CardHeader>
@@ -47,7 +47,7 @@ export default function SettingsPage() {
                         />
                     </div>
                 </CardContent>
-            </Card>
+            </Card> */}
 
             {/* Data Section */}
             <Card className="mb-6 border-2">
