@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"yagui/utils"
 )
 
@@ -27,11 +26,6 @@ func (a *App) GetVersion() string {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-}
-
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
 // AddShortcut adds a new shortcut and returns all shortcuts
