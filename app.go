@@ -61,3 +61,11 @@ func (a *App) RemoveShortcut(name string) error {
 func (a *App) ExportShortcuts() error {
 	return utils.ExportShortcuts(a.ctx)
 }
+
+func (a *App) ImportShortcuts() error {
+	err := utils.ImportShortcuts(a.ctx)
+    if err != nil {
+		return err
+	}
+	return nil
+}
