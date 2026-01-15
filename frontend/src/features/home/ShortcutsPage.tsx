@@ -78,6 +78,11 @@ export default function ShortcutsPage() {
 
     const formattedShortcuts = Object.entries(shortcuts).map(([name, command]) => ({ name, command }))
 
+    const truncateCommand = (text: string, maxLength: number = 37) => {
+        if (text.length <= maxLength) return text
+        return text.slice(0, maxLength) + '...'
+    }
+
     return (
         <div className="flex flex-col h-full p-8 pt-4 max-w-6xl mx-auto">
             {/* Shortcuts Table */}
@@ -111,8 +116,8 @@ export default function ShortcutsPage() {
                                                     className="border-2 border-slate-600 bg-slate-900/50 text-blue-200 focus:border-blue-500"
                                                 />
                                             ) : (
-                                                <code className="px-3 py-1.5 rounded bg-slate-900 text-blue-300 font-mono text-sm border border-slate-700">
-                                                    {shortcut.command}
+                                                <code className="px-3 py-1.5 rounded bg-slate-900 text-blue-300 font-mono text-sm border border-slate-700" title={shortcut.command}>
+                                                    {truncateCommand(shortcut.command)}
                                                 </code>
                                             )}
                                         </TableCell>

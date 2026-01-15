@@ -13,7 +13,7 @@ export default function Layout() {
     }
   }
   return (
-    <div className="min-h-screen border border-white bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+    <div className="min-h-screen   bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
       <div className="flex gap-5 p-2">
         <div className="h-12 ">
           <img src="/ya.png" alt="" className="h-full" />
@@ -22,7 +22,7 @@ export default function Layout() {
           <h1 className="text-4xl font-bold text-blue-100 leading-0">| {getPageTitle()}</h1>
         </div>
       </div>
-      <div className="flex flex-1 min-h-[calc(100vh-40px)] border-t border-white">
+      <div className="flex flex-1 min-h-[calc(100vh-40px)] border-t border-slate-700/50">
         <Sidebar />
         <main className="flex-1 overflow-auto">
           <Outlet />
