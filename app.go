@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"yagui/utils"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -64,8 +66,12 @@ func (a *App) ExportShortcuts() error {
 
 func (a *App) ImportShortcuts() error {
 	err := utils.ImportShortcuts(a.ctx)
-    if err != nil {
+	if a.ctx != nil {
+		runtime.EventsEmit(a.ctx, "shortcuts:changed")
+	}
+	if err != nil {
 		return err
 	}
 	return nil
 }
+	
