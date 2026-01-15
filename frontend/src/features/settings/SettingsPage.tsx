@@ -21,7 +21,7 @@ export default function SettingsPage() {
 
 
     return (
-        <div className="flex flex-col h-full p-8 max-w-4xl mx-auto">
+        <div className="flex flex-col h-full p-8 pt-4 max-w-4xl mx-auto">
             {/* General Section */}
             <Card className="mb-6 border-2">
                 <CardHeader className="border-b bg-muted/30">

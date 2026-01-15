@@ -79,7 +79,7 @@ export default function ShortcutsPage() {
     const formattedShortcuts = Object.entries(shortcuts).map(([name, command]) => ({ name, command }))
 
     return (
-        <div className="flex flex-col h-full p-8 max-w-6xl mx-auto">
+        <div className="flex flex-col h-full p-8 pt-4 max-w-6xl mx-auto">
             {/* Shortcuts Table */}
             <Card className="mb-8 flex-1 flex flex-col border-2">
                 <CardHeader className="border-b bg-muted/30">
