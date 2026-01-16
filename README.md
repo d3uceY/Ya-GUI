@@ -1,6 +1,6 @@
 # Ya-GUI
 
-A modern desktop application for managing command-line shortcuts and aliases for the Ya CLI tool.
+A modern desktop application for managing command-line shortcuts and aliases for the [Ya CLI](https://github.com/d3uceY/Ya-CLI) tool.
 
 ## About
 
@@ -14,11 +14,11 @@ Ya-GUI is a sleek, user-friendly graphical interface built with Wails (Go + Reac
 - **Command Truncation**: Long commands are automatically truncated in the table view with full text visible on hover
 - **Confirmation Dialogs**: Safe deletion with confirmation prompts to prevent accidental removals
 - **Inline Editing**: Edit shortcuts directly in the table without switching views
-- **Persistent Storage**: All shortcuts are saved and synced with your Ya CLI configuration
+- **Persistent Storage**: All shortcuts are saved and synced with your [Ya CLI](https://github.com/d3uceY/Ya-CLI) configuration
 
 ## What is Ya CLI?
 
-Ya CLI is a command-line tool that allows you to create shortcuts for frequently used commands. Instead of typing long commands repeatedly, you can define short aliases that Ya CLI will expand and execute for you.
+[Ya CLI](https://github.com/d3uceY/Ya-CLI) is a command-line tool that allows you to create shortcuts for frequently used commands. Instead of typing long commands repeatedly, you can define short aliases that Ya CLI will expand and execute for you.
 
 For example:
 - `ya gp` → `git push`
@@ -126,7 +126,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-[Add your license here]
+[[MIT License](https://github.com/d3uceY/Ya-GUI?tab=MIT-1-ov-file#)]
+
 
 ## Support
 
