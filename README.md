@@ -17,11 +17,11 @@ Ya-GUI is a sleek, user-friendly graphical interface built with Wails (Go + Reac
 ![Ya-GUI Banner](https://img.shields.io/badge/Made%20with-Wails-00ADD8?style=for-the-badge&logo=go)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
 
-[![Download Ya-GUI v0.1.0 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/d3uceY/Ya-GUI/releases/download/v0.1.0/Ya.GUI.exe)
+[![Download Ya-GUI v0.1.1 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/d3uceY/Ya-GUI/releases/download/v0.1.1/Ya.GUI.exe)
 
-**[⬇️ Ya-GUI](https://github.com/d3uceY/Ya-GUI/releases/download/v0.1.0/Ya.GUI.exe)**
+**[⬇️ Ya-GUI](https://github.com/d3uceY/Ya-GUI/releases/download/v0.1.1/Ya.GUI.exe)**
 
-> Windows 10/11 (64-bit) | Version 0.1.0
+> Windows 10/11 (64-bit) | Version 0.1.1
 
 
 ## Features
