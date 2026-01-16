@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Edit2, Save, Trash2 } from "lucide-react"
+import { Edit2, Save, Trash2, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -30,6 +30,7 @@ export default function ShortcutsPage() {
     const [shortcutName, setShortcutName] = useState("")
     const [commandLine, setCommandLine] = useState("")
     const [shortcuts, setShortcuts] = useState<Record<string, string>>({})
+    const [searchQuery, setSearchQuery] = useState("")
     const [isEditing, setisEditing] = useState({
         name: "",
         command: ""
@@ -78,10 +79,15 @@ export default function ShortcutsPage() {
 
     const formattedShortcuts = Object.entries(shortcuts).map(([name, command]) => ({ name, command }))
 
+    const filteredShortcuts = formattedShortcuts.filter(shortcut =>
+        shortcut.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        shortcut.command.toLowerCase().includes(searchQuery.toLowerCase())
+    )
     const truncateCommand = (text: string, maxLength: number = 37) => {
         if (text.length <= maxLength) return text
         return text.slice(0, maxLength) + '...'
     }
+
 
     return (
         <div className="flex flex-col h-full p-8 pt-4 max-w-6xl mx-auto">
@@ -89,6 +95,17 @@ export default function ShortcutsPage() {
             <Card className="mb-8 flex-1 pt-0 overflow-hidden flex flex-col border-2 bg-slate-800/50 border-slate-700">
                 <CardHeader className="border-b pt-6 border-slate-700 bg-slate-900/50">
                     <CardTitle className="text-xl text-blue-100">Your Shortcuts</CardTitle>
+                    <div className="mt-4">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                            <Input
+                                placeholder="Search shortcuts or commands..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full pl-10 border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500 h-11"
+                            />
+                        </div>
+                    </div>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-x-auto p-0">
                     <ScrollArea className="h-80">
@@ -101,7 +118,7 @@ export default function ShortcutsPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {formattedShortcuts.map((shortcut) => (
+                                {filteredShortcuts.map((shortcut) => (
                                     <TableRow key={shortcut.name} className="hover:bg-slate-900/50 border-b border-slate-700/50">
                                         <TableCell className="py-4">
                                             <Badge variant="secondary" className="font-bold text-sm px-3 py-1 bg-blue-900/50 text-blue-200 border border-blue-700">
@@ -110,8 +127,8 @@ export default function ShortcutsPage() {
                                         </TableCell>
                                         <TableCell className="py-4">
                                             {isEditing.name === shortcut.name ? (
-                                                <Input 
-                                                    value={isEditing.command} 
+                                                <Input
+                                                    value={isEditing.command}
                                                     onChange={(e) => handleEditChange(e)}
                                                     className="border-2 border-slate-600 bg-slate-900/50 text-blue-200 focus:border-blue-500"
                                                 />
