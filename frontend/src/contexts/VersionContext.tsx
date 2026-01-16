@@ -15,7 +15,7 @@ interface VersionContextType {
 
 const VersionContext = createContext<VersionContextType | undefined>(undefined);
 
-export const VersionProvider = ({ children }: { children: React.ReactNode }) => {
+export const VersionContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentVersion, setCurrentVersion] = useState<string>("");
   const [updateAvailable, setUpdateAvailable] = useState<UpdateInfo | null>(null);
   const [isChecking, setIsChecking] = useState<boolean>(false);

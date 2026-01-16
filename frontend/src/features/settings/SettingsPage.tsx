@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 // import { Switch } from "@/components/ui/switch"
 import { GetVersion, ImportShortcuts, ExportShortcuts } from "../../../wailsjs/go/main/App"
 import { useState, useEffect } from "react"
+import { useVersion } from "@/contexts/VersionContext"
 
 
 export default function SettingsPage() {
