@@ -84,7 +84,8 @@ export default function SettingsPage() {
                         <span className="text-base font-bold text-blue-200">{version}</span>
                     </div>
                     <a
-                        href="#"
+                        href="https://github.com/d3uceY/Ya-GUI"
+                        target="_blank"
                         className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold hover:underline"
                     >
                         Visit Website
