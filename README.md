@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="assets/ya.png" alt="ya logo" />
+    <img src="build/windows/icon.ico" alt="ya logo" />
     <h1>Ya - GUI</h1>
 </div>
 
