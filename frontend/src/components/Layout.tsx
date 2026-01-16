@@ -1,14 +1,19 @@
 import { Outlet } from "react-router-dom"
 import Sidebar from "./Sidebar"
 import { useLocation } from "react-router-dom"
+import { WindowSetTitle } from '../../wailsjs/runtime/runtime'
 
 export default function Layout() {
   const location = useLocation();
 
   const getPageTitle = () => {
     switch (location.pathname) {
-      case "/": return "Command Alias Manager";
-      case "/settings": return "Settings";
+      case "/":
+        WindowSetTitle("Ya - GUI | Command Alias Manager");
+        return "Command Alias Manager";
+      case "/settings":
+        WindowSetTitle("Ya - GUI | Settings");
+        return "Settings";
       default: return "";
     }
   }
