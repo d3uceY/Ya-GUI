@@ -194,7 +194,7 @@ func ImportShortcuts(context context.Context) error {
 		}
 	}
 
-	// store current shortcuts in map
+	// for some reason, i forgot maps only store unique keys 😂
 	var currentShortcuts map[string]string
 	err = json.Unmarshal(currentShortcutData, &currentShortcuts)
 
@@ -221,5 +221,6 @@ func ImportShortcuts(context context.Context) error {
 		return err
 	}
 
+	// this permission param lowkey threw me off ngl
 	return os.WriteFile(shortCutpath, data, 0644)
 }
