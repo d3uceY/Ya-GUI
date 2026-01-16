@@ -43,11 +43,23 @@ For example:
 3. Enter the full **Command Line** (e.g., `git push`, `npm run dev`)
 4. Click the **Add Shortcut** button
 
+<img width="518" height="269" alt="image" src="https://github.com/user-attachments/assets/61ed6319-9f27-4560-8e99-a3bb74633e06" />
+
+
+### Importing and Exporting Shortcuts (JSON)
+
+1. Go to settings page
+2. Click **Export Shortcuts** or **Import Shortcuts**
+   
+<img width="765" height="183" alt="image" src="https://github.com/user-attachments/assets/fdbefebd-6c3e-49e6-9ccc-3086810bc10c" />
+
 ### Searching Shortcuts
 
 1. Use the search bar at the top of the shortcuts table
 2. Type any part of the shortcut name or command
 3. Results filter in real-time as you type
+
+<img width="491" height="51" alt="image" src="https://github.com/user-attachments/assets/9edf3f3b-2986-44e9-8a8e-da8f452bec7d" />
 
 ### Editing a Shortcut
 
@@ -55,11 +67,15 @@ For example:
 2. Change the command in the input field that appears
 3. Click the **Save** (checkmark) icon to save your changes
 
+<img width="500" height="270" alt="image" src="https://github.com/user-attachments/assets/4ff1624f-4b25-4d90-9374-48b0ef10985e" />
+
 ### Deleting a Shortcut
 
 1. Click the **Delete** (trash) icon next to the shortcut
 2. Confirm the deletion in the dialog that appears
 3. The shortcut will be permanently removed
+
+<img width="509" height="270" alt="image" src="https://github.com/user-attachments/assets/110bc1c7-a2fe-4a8c-b847-43e446ed247e" />
 
 ## Installation
 
