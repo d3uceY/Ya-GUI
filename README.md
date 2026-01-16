@@ -1,4 +1,7 @@
-# Ya-GUI
+<div align="center">
+    <img src="assets/ya.png" alt="ya logo" />
+    <h1>Ya - GUI</h1>
+</div>
 
 A modern desktop application for managing command-line shortcuts and aliases for the [Ya CLI](https://github.com/d3uceY/Ya-CLI) tool.
 
@@ -111,7 +114,7 @@ ya-gui/
 
 ## Technologies Used
 
-- **Frontend**: React, TypeScript, Tailwind CSS, shadcn/ui
+- **Frontend**: React, TypeScript
 - **Backend**: Go
 - **Framework**: Wails v2
 - **Build Tool**: Vite
