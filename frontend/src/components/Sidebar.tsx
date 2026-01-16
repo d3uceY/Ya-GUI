@@ -2,9 +2,11 @@ import { Link, useLocation } from "react-router-dom"
 import { Menu, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useVersion } from "@/contexts/VersionContext"
 
 export default function Sidebar() {
   const location = useLocation()
+  const { updateAvailable } = useVersion()
 
   const navItems = [
     { path: "/", label: "My Shortcuts", icon: Menu },
@@ -19,6 +21,7 @@ export default function Sidebar() {
           {navItems.map((item) => {
             const Icon = item.icon
             const isActive = location.pathname === item.path
+            const showUpdateIndicator = item.path === "/settings" && updateAvailable
             return (
               <Link key={item.path} to={item.path}>
                 <Button
@@ -30,6 +33,9 @@ export default function Sidebar() {
                 >
                   <Icon className="w-5 h-5" />
                   {item.label}
+                  {showUpdateIndicator && (
+                    <span className="ml-auto w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  )}
                 </Button>
               </Link>
             )
