@@ -3,13 +3,12 @@ import { ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 // import { Switch } from "@/components/ui/switch"
-import { GetVersion, ImportShortcuts, ExportShortcuts } from "../../../wailsjs/go/main/App"
-import { useState, useEffect } from "react"
+import { ImportShortcuts, ExportShortcuts } from "../../../wailsjs/go/main/App"
 import { useVersion } from "@/contexts/VersionContext"
 
 
 export default function SettingsPage() {
-    const [version, setVersion] = useState<string>("");
+    const { currentVersion, updateAvailable } = useVersion();
 
     const handleImportshortcuts = async () => {
         await ImportShortcuts();
@@ -18,37 +17,9 @@ export default function SettingsPage() {
         await ExportShortcuts();
     }
 
-    const getVersion = async () => {
-        await GetVersion().then((version) => {
-            setVersion(version);
-        });
-    }
-
-    useEffect(() => {
-        getVersion();
-    }, [])
-
 
     return (
         <div className="flex flex-col h-full p-8 pt-4 max-w-4xl mx-auto">
-            {/* General Section */}
-            {/* <Card className="mb-6 border-2">
-                <CardHeader className="border-b bg-muted/30">
-                    <CardTitle className="text-xl">General</CardTitle>
-                </CardHeader>
-                <CardContent className="py-6">
-                    <div className="flex items-center justify-between py-4 px-4 rounded-lg hover:bg-muted/50 transition-colors">
-                        <div>
-                            <span className="text-base font-bold text-foreground block">Dark Mode</span>
-                            <span className="text-sm text-muted-foreground">Toggle dark theme</span>
-                        </div>
-                        <Switch
-                        // checked={settings.darkMode}
-                        // onCheckedChange={(checked) => updateSettings({ darkMode: checked })}
-                        />
-                    </div>
-                </CardContent>
-            </Card> */}
 
             {/* Data Section */}
             <Card className="mb-6 border-2 bg-slate-800/50 overflow-hidden pt-0 border-slate-700">
@@ -82,8 +53,36 @@ export default function SettingsPage() {
                 <CardContent className="space-y-6 pt-6">
                     <div className="flex items-center justify-between py-3 px-4 rounded-lg bg-slate-900/50 border border-slate-700">
                         <span className="text-sm font-bold text-slate-400">Version</span>
-                        <span className="text-base font-bold text-blue-200">{version}</span>
+                        <span className="text-base font-bold text-blue-200">{currentVersion}</span>
                     </div>
+                    
+                    {updateAvailable && (
+                        <div className="p-4 rounded-lg bg-blue-900/30 border-2 border-blue-500">
+                            <div className="flex items-start justify-between mb-3">
+                                <div>
+                                    <span className="text-base font-bold text-blue-100 block">Update Available!</span>
+                                    <span className="text-sm text-blue-300">Version {updateAvailable.version}</span>
+                                </div>
+                            </div>
+                            <div className="space-y-2 mb-4">
+                                <div className="flex items-center justify-between py-2 px-3 rounded bg-slate-900/50 border border-slate-700">
+                                    <span className="text-xs font-bold text-slate-400">Release Date</span>
+                                    <span className="text-sm text-blue-200">{new Date(updateAvailable.releaseDate).toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                            <a
+                                href={updateAvailable.releaseUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-900/50 border-2 border-blue-500 hover:border-blue-400">
+                                    <ExternalLink className="w-4 h-4 mr-2" />
+                                    Download Update
+                                </Button>
+                            </a>
+                        </div>
+                    )}
+                    
                     <a
                         href="https://github.com/d3uceY/Ya-GUI"
                         target="_blank"
