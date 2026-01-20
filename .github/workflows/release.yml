@@ -6,6 +6,9 @@ on:
     # Match any new tag
       - '*'
 
+permissions:
+  contents: write   # REQUIRED to create releases & upload assets
+
 env:
   # Necessary for most environments as build failure can occur due to OOM issues
   NODE_OPTIONS: "--max-old-space-size=4096"
@@ -28,27 +31,12 @@ jobs:
             os: 'macos-latest'
 
     runs-on: ${{ matrix.build.os }}
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           submodules: recursive
-
-        # install dependencies for Linux builds
-        # hmm, this shit is not 22.04, does that mean this does not even run? lmao
-      - name: Install Linux dependencies
-        if: matrix.build.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-          libgtk-3-dev \
-          libwebkit2gtk-4.0-dev \
-          libayatana-appindicator3-dev \
-          libx11-dev \
-          libxrandr-dev \
-          libxi-dev \
-          libgl1-mesa-dev \
-          libglib2.0-dev
 
       - name: Build wails
         uses: dAppServer/wails-build-action@main
@@ -59,7 +47,28 @@ jobs:
           package: false
           go-version: '1.23'
 
-       # Upload build artifacts
+      - name: Upload asset to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: |
+            build/bin/*.zip
+            build/bin/*.exe
+            build/bin/*
+          asset_name: auto
+          asset_content_type: application/octet-stream
+
+
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+
+    steps:
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -70,34 +79,3 @@ jobs:
           release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
-      - name: Upload Release Assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/bin/*.app      # macOS
-          asset_name: YaGUI-macOS.app
-          asset_content_type: application/octet-stream
-
-      - name: Upload Windows Asset
-        if: matrix.build.os == 'windows-latest'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/bin/*.exe
-          asset_name: YaGUI-Windows.exe
-          asset_content_type: application/octet-stream
-          
-      - name: Upload Linux Asset
-        if: matrix.build.os == 'ubuntu-22.04'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/bin/*
-          asset_name: YaGUI-Linux
-          asset_content_type: application/octet-stream
