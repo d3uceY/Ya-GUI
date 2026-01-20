@@ -74,4 +74,7 @@ func (a *App) ImportShortcuts() error {
 	}
 	return nil
 }
-	
+
+func (a *App) CliExists(cmd string) bool {
+	return utils.CliExists(cmd)
+}

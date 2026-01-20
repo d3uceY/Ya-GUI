@@ -6,6 +6,10 @@ export function AddShortcut(arg1, arg2) {
   return window['go']['main']['App']['AddShortcut'](arg1, arg2);
 }
 
+export function CliExists(arg1) {
+  return window['go']['main']['App']['CliExists'](arg1);
+}
+
 export function ExportShortcuts() {
   return window['go']['main']['App']['ExportShortcuts']();
 }

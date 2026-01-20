@@ -1,5 +1,5 @@
 
-import { ExternalLink } from "lucide-react"
+import { Download, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 // import { Switch } from "@/components/ui/switch"
@@ -55,7 +55,7 @@ export default function SettingsPage() {
                         <span className="text-sm font-bold text-slate-400">Version</span>
                         <span className="text-base font-bold text-blue-200">{currentVersion}</span>
                     </div>
-                    
+
                     {updateAvailable && (
                         <div className="p-4 rounded-lg bg-blue-900/30 border-2 border-blue-500">
                             <div className="flex items-start justify-between mb-3">
@@ -82,15 +82,24 @@ export default function SettingsPage() {
                             </a>
                         </div>
                     )}
-                    
-                    <a
-                        href="https://github.com/d3uceY/Ya-GUI"
-                        target="_blank"
-                        className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold hover:underline"
-                    >
-                        Visit Website
-                        <ExternalLink className="w-4 h-4" />
-                    </a>
+                    <div className="flex items-center gap-4">
+                        <a
+                            href="https://github.com/d3uceY/Ya-GUI"
+                            target="_blank"
+                            className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold hover:underline"
+                        >
+                            Visit Website
+                            <ExternalLink className="w-4 h-4" />
+                        </a>
+                        <a
+                            href="https://github.com/d3uceY/Ya-CLI/releases/tag/v0.3.1"
+                            target="_blank"
+                            className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold hover:underline"
+                        >
+                            Download CLI
+                            <Download className="w-4 h-4" />
+                        </a>
+                    </div>
                 </CardContent>
             </Card>
         </div>

@@ -3,11 +3,17 @@ package utils
 import (
 	"context"
 	"encoding/json"
-	"os"
-	"path/filepath"
-
 	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"os"
+	"os/exec"
+	"path/filepath"
 )
+
+func CliExists(cmd string) bool {
+	_, err := exec.LookPath(cmd)
+	return err == nil
+}
+
 
 func getAppDataDir() (string, error) {
 	dir, err := os.UserConfigDir()
@@ -224,3 +230,6 @@ func ImportShortcuts(context context.Context) error {
 	// this permission param lowkey threw me off ngl
 	return os.WriteFile(shortCutpath, data, 0644)
 }
+
+
+
