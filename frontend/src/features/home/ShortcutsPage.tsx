@@ -40,6 +40,7 @@ export default function ShortcutsPage() {
     useEffect(() => {
         loadShortcuts()
     }, [])
+    
     const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setisEditing((prev) => ({
             ...prev,

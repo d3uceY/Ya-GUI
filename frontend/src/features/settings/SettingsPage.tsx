@@ -40,7 +40,6 @@ export default function SettingsPage() {
                             Import Shortcuts
                         </Button>
                     </div>
-                    {/* {exportMessage && <p className="text-sm text-green-600 mt-3">{exportMessage}</p>} */}
                 </CardContent>
             </Card>
 
