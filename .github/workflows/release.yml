@@ -34,22 +34,6 @@ jobs:
         with:
           submodules: recursive
 
-        # install dependencies for Linux builds
-        # hmm, this shit is not 22.04, does that mean this does not even run? lmao
-      - name: Install Linux dependencies
-        if: matrix.build.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-          libgtk-3-dev \
-          libwebkit2gtk-4.0-dev \
-          libayatana-appindicator3-dev \
-          libx11-dev \
-          libxrandr-dev \
-          libxi-dev \
-          libgl1-mesa-dev \
-          libglib2.0-dev
-
       - name: Build wails
         uses: dAppServer/wails-build-action@main
         id: build
@@ -61,7 +45,7 @@ jobs:
 
        # Upload build artifacts
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.build.name }}-${{ matrix.build.os }}
           path: |
