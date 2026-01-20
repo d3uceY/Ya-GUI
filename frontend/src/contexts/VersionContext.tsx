@@ -1,4 +1,4 @@
-import { createContext, use, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { GetVersion, CliExists } from "../../wailsjs/go/main/App";
 import { LogPrint } from "../../wailsjs/runtime/runtime";
 

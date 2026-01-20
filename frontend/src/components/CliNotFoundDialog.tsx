@@ -31,7 +31,7 @@ export default function CliNotFoundDialog({ open }: CliNotFoundDialogProps) {
             </AlertDialogTitle>
           </div>
           <AlertDialogDescription className="text-slate-300 text-base pt-4">
-            The Ya CLI tool is either not installed or not in your system's environmental path.
+            The Ya CLI tool is either not installed or not in your system's environmental path, or it could be in the environmental path but it's file name is not "ya".
             <br /><br />
             To use this application, you need to install the Ya CLI tool first.
           </AlertDialogDescription>
