@@ -1,47 +1,70 @@
-name: Build & Release
+name: Wails build
 
 on:
   push:
     tags:
-      - "*"
+    # Match any new tag
+      - '*'
 
-permissions:
-  contents: write   # REQUIRED to create releases & upload assets
+env:
+  # Necessary for most environments as build failure can occur due to OOM issues
+  NODE_OPTIONS: "--max-old-space-size=4096"
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
     strategy:
+    # Failure in one platform build won't impact the others
       fail-fast: false
       matrix:
-        include:
-          - os: ubuntu-22.04
-            platform: linux/amd64
-          - os: windows-latest
-            platform: windows/amd64
-          - os: macos-latest
-            platform: darwin/universal
+        build:
+          - name: 'YaGUI'
+            platform:  'linux/amd64'
+            os: 'ubuntu-22.04'
+          - name: 'YaGUI'
+            platform:  'windows/amd64'
+            os: 'windows-latest'
+          - name: 'YaGUI'
+            platform:  'darwin/universal'
+            os: 'macos-latest'
 
+    runs-on: ${{ matrix.build.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build with Snider/build
-        uses: Snider/build@v2.2
+        uses: actions/checkout@v2
         with:
-          build-name: YaGUI
-          build-platform: ${{ matrix.platform }}
+          submodules: recursive
+
+        # install dependencies for Linux builds
+        # hmm, this shit is not 22.04, does that mean this does not even run? lmao
+      - name: Install Linux dependencies
+        if: matrix.build.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+          libgtk-3-dev \
+          libwebkit2gtk-4.0-dev \
+          libayatana-appindicator3-dev \
+          libx11-dev \
+          libxrandr-dev \
+          libxi-dev \
+          libgl1-mesa-dev \
+          libglib2.0-dev
+
+      - name: Build wails
+        uses: dAppServer/wails-build-action@main
+        id: build
+        with:
+          build-name: ${{ matrix.build.name }}
+          build-platform: ${{ matrix.build.platform }}
           package: false
-          go-version: "1.23"
+          go-version: '1.23'
 
-      - name: Upload binaries to GitHub Release
-        uses: svenstaro/upload-release-action@v2
+       # Upload build artifacts
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
-          file: |
-            build/bin/*.zip
-            build/bin/*.exe
-            build/bin/*
-          file_glob: true
-          overwrite: true
+          name: ${{ matrix.build.name }}-${{ matrix.build.os }}
+          path: |
+            build/bin/*.app        # macOS
+            build/bin/*.exe        # Windows
+            build/bin/*            # Linux
