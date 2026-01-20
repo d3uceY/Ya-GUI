@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { GetVersion } from "../../wailsjs/go/main/App";
+import { createContext, use, useContext, useEffect, useState } from "react";
+import { GetVersion, CliExists } from "../../wailsjs/go/main/App";
+import { LogPrint } from "../../wailsjs/runtime/runtime";
 
 interface UpdateInfo {
   version: string;
@@ -15,10 +16,13 @@ interface VersionContextType {
 
 const VersionContext = createContext<VersionContextType | undefined>(undefined);
 
+const CliContext = createContext<boolean | undefined>(undefined);
+
 export const VersionContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentVersion, setCurrentVersion] = useState<string>("");
   const [updateAvailable, setUpdateAvailable] = useState<UpdateInfo | null>(null);
   const [isChecking, setIsChecking] = useState<boolean>(false);
+  const [cliExists, setCliExists] = useState<boolean>(false);
 
   useEffect(() => {
     const checkVersion = async () => {
@@ -51,14 +55,25 @@ export const VersionContextProvider = ({ children }: { children: React.ReactNode
         setIsChecking(false);
       }
     };
+    const checkCliExists = async () => {
+      await CliExists("ya version").then((exists) => {
+        setCliExists(exists),
+          LogPrint(`CLI exists check returned: ${exists}`)
+      }).catch((error) => {
+        LogPrint(`Error checking CLI existence: ${error}`)
+      });
+    }
 
     checkVersion();
+    checkCliExists();
   }, []);
 
   return (
-    <VersionContext.Provider value={{ currentVersion, updateAvailable, isChecking }}>
-      {children}
-    </VersionContext.Provider>
+    <CliContext.Provider value={cliExists}>
+      <VersionContext.Provider value={{ currentVersion, updateAvailable, isChecking }}>
+        {children}
+      </VersionContext.Provider>
+    </CliContext.Provider>
   );
 };
 
@@ -66,6 +81,14 @@ export const useVersion = () => {
   const context = useContext(VersionContext);
   if (context === undefined) {
     throw new Error("useVersion must be used within a VersionProvider");
+  }
+  return context;
+};
+
+export const useCliExists = () => {
+  const context = useContext(CliContext);
+  if (context === undefined) {
+    throw new Error("useCliExists must be used within a VersionProvider");
   }
   return context;
 };
