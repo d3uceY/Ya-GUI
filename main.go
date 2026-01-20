@@ -19,7 +19,7 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:         "Ya GUI",
+		Title:         "YaGUI",
 		Width:         800,
 		MaxWidth:      800,
 		Height:        600,
