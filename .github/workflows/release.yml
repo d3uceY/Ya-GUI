@@ -49,6 +49,6 @@ jobs:
         with:
           name: ${{ matrix.build.name }}-${{ matrix.build.os }}
           path: |
-            build/bin/*.app        # macOS
-            build/bin/*.exe        # Windows
-            build/bin/*            # Linux
+            build/bin/*.app       
+            build/bin/*.exe        
+            build/bin/*           
