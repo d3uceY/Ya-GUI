@@ -60,11 +60,44 @@ jobs:
           go-version: '1.23'
 
        # Upload build artifacts
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: ${{ matrix.build.name }}-${{ matrix.build.os }}
-          path: |
-            build/bin/*.app        # macOS
-            build/bin/*.exe        # Windows
-            build/bin/*            # Linux
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/bin/*.app      # macOS
+          asset_name: YaGUI-macOS.app
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows Asset
+        if: matrix.build.os == 'windows-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/bin/*.exe
+          asset_name: YaGUI-Windows.exe
+          asset_content_type: application/octet-stream
+          
+      - name: Upload Linux Asset
+        if: matrix.build.os == 'ubuntu-22.04'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/bin/*
+          asset_name: YaGUI-Linux
+          asset_content_type: application/octet-stream
