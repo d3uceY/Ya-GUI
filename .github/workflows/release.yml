@@ -1,2 +1,55 @@
-- name: Wails Build Action
-  uses: Snider/build@v2.2
+name: Build and Release
+
+# Run when you push any tag
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write  # Required for creating releases and uploading assets
+
+jobs:
+  build-release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            platform: linux/amd64
+          - os: windows-latest
+            platform: windows/amd64
+          - os: macos-latest
+            platform: darwin/universal
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Snider/build to compile
+        uses: Snider/build@v2.2
+        with:
+          build-name: YaGUI
+          build-platform: ${{ matrix.platform }}
+          package: false   # Don’t auto-attach artifacts yet — we’ll handle release uploads
+          go-version: "1.23"
+
+      # macOS: zip the .app bundle so GitHub users can download it
+      - name: Zip macOS build
+        if: matrix.os == 'macos-latest'
+        run: |
+          ditto -c -k --keepParent "build/bin/YaGUI.app" "build/bin/YaGUI-macos.zip"
+
+      # Upload artifacts to GitHub Release
+      - name: Upload to GitHub Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          file: |
+            build/bin/*.zip
+            build/bin/*.exe
+            build/bin/*
+          file_glob: true
+          overwrite: true
