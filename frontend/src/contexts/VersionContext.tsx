@@ -56,7 +56,7 @@ export const AppContextProvider = ({ children }: { children: React.ReactNode }) 
       }
     };
     const checkCliExists = async () => {
-      await CliExists("ya version").then((exists) => {
+      await CliExists("ya").then((exists) => {
         setCliExists(exists),
           LogPrint(`CLI exists check returned: ${exists}`)
       }).catch((error) => {
