@@ -17,13 +17,13 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - name: 'Ya GUI'
+          - name: 'YaGUI'
             platform:  'linux/amd64'
             os: 'ubuntu-latest'
-          - name: 'Ya GUI'
+          - name: 'YaGUI'
             platform:  'windows/amd64'
             os: 'windows-latest'
-          - name: 'Ya GUI'
+          - name: 'YaGUI'
             platform:  'darwin/universal'
             os: 'macos-latest'
 
@@ -33,6 +33,19 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
+      - name: Install Linux dependencies
+        if: matrix.build.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+          libgtk-3-dev \
+          libwebkit2gtk-4.0-dev \
+          libayatana-appindicator3-dev \
+          libx11-dev \
+          libxrandr-dev \
+          libxi-dev \
+          libgl1-mesa-dev \
+          libglib2.0-dev
 
       - name: Build wails
         uses: dAppServer/wails-build-action@main
