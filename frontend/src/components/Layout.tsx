@@ -2,8 +2,11 @@ import { Outlet } from "react-router-dom"
 import Sidebar from "./Sidebar"
 import { useLocation } from "react-router-dom"
 import { WindowSetTitle } from '../../wailsjs/runtime/runtime'
+import { useCli } from "@/contexts/VersionContext"
+import CliNotFoundDialog from "./CliNotFoundDialog"
 
 export default function Layout() {
+  const cliExists = useCli();
   const location = useLocation();
 
   const getPageTitle = () => {
@@ -18,7 +21,9 @@ export default function Layout() {
     }
   }
   return (
-    <div className="min-h-screen   bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+    <>
+      <CliNotFoundDialog open={!cliExists} />
+      <div className="min-h-screen   bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
       <div className="flex gap-5 p-2">
         <div className="h-12 ">
           <img src="/ya.png" alt="" className="h-full" />
@@ -34,5 +39,6 @@ export default function Layout() {
         </main>
       </div>
     </div>
+    </>
   )
 }

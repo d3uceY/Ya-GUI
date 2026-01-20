@@ -18,7 +18,7 @@ const VersionContext = createContext<VersionContextType | undefined>(undefined);
 
 const CliContext = createContext<boolean | undefined>(undefined);
 
-export const VersionContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentVersion, setCurrentVersion] = useState<string>("");
   const [updateAvailable, setUpdateAvailable] = useState<UpdateInfo | null>(null);
   const [isChecking, setIsChecking] = useState<boolean>(false);
@@ -85,10 +85,10 @@ export const useVersion = () => {
   return context;
 };
 
-export const useCliExists = () => {
+export const useCli = () => {
   const context = useContext(CliContext);
   if (context === undefined) {
-    throw new Error("useCliExists must be used within a VersionProvider");
+    throw new Error("useCli must be used within a VersionProvider");
   }
   return context;
 };

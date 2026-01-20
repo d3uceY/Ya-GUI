@@ -2,11 +2,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Layout from "./components/Layout"
 import ShortcutsPage from "./features/home/ShortcutsPage"
 import SettingsPage from "./features/settings/SettingsPage"
-import { VersionContextProvider } from "./contexts/VersionContext"
+import { AppContextProvider } from "./contexts/VersionContext"
 
 function App() {
   return (
-    <VersionContextProvider>
+    <AppContextProvider>
       <Router>
         <Routes>
           <Route element={<Layout />}>
@@ -15,7 +15,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
-    </VersionContextProvider>
+    </AppContextProvider>
   )
 }
 
