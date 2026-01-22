@@ -1,4 +1,4 @@
-<div align="center">
+![yagui](https://github.com/user-attachments/assets/173a5639-7cee-4adc-b6a3-72c34cc78227)<div align="center">
     <img src="build/windows/icon.ico" alt="ya logo" />
     <h1>Ya - GUI</h1>
 </div>
@@ -36,6 +36,7 @@ Visit the link above to grab the latest version for your platform.
 ---
 
 
+
 ## Features
 
 - **Shortcut Management**: Create, edit, and delete command-line shortcuts with ease
@@ -45,6 +46,8 @@ Visit the link above to grab the latest version for your platform.
 - **Confirmation Dialogs**: Safe deletion with confirmation prompts to prevent accidental removals
 - **Inline Editing**: Edit shortcuts directly in the table without switching views
 - **Persistent Storage**: All shortcuts are saved and synced with your [Ya CLI](https://github.com/d3uceY/Ya-CLI) configuration
+
+<img src="https://github.com/user-attachments/assets/f0c674f8-e399-474b-8379-f38c8c048d4c" width="100%"/>
 
 ## What is Ya CLI?
 
