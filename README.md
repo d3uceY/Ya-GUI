@@ -9,9 +9,7 @@ A modern desktop application for managing command-line shortcuts and aliases for
 
 Ya-GUI is a sleek, user-friendly graphical interface built with Wails (Go + React + TypeScript) that helps you manage your command-line shortcuts efficiently. No more memorizing complex commands or editing configuration files manually - Ya-GUI provides an intuitive way to create, edit, and organize your CLI aliases.
 
-<div align="center">
-   <img width="763" height="562" alt="image" src="https://github.com/user-attachments/assets/258c0012-6944-43e7-95ee-a5f147ceca2b" />
-</div>
+<img  alt="image" src="https://github.com/user-attachments/assets/258c0012-6944-43e7-95ee-a5f147ceca2b" width="100%"/>
 
 [![Latest Release](https://img.shields.io/github/v/release/d3uceY/Ya-GUI?style=for-the-badge)](https://github.com/d3uceY/Ya-GUI/releases/latest)
 [![macOS](https://img.shields.io/badge/macOS-Supported-blue?style=for-the-badge&logo=apple)](https://github.com/d3uceY/Ya-GUI/releases/latest)
@@ -36,15 +34,17 @@ Visit the link above to grab the latest version for your platform.
 ---
 
 
+
 ## Features
 
-- **Shortcut Management**: Create, edit, and delete command-line shortcuts with ease
+- **Shortcut Management**: Create, edit, delete, export and import command-line shortcuts with ease
 - **Real-time Search**: Quickly find shortcuts by name or command using the built-in search functionality
 - **Visual Feedback**: Clean, modern dark-themed UI with color-coded elements
-- **Command Truncation**: Long commands are automatically truncated in the table view with full text visible on hover
 - **Confirmation Dialogs**: Safe deletion with confirmation prompts to prevent accidental removals
 - **Inline Editing**: Edit shortcuts directly in the table without switching views
 - **Persistent Storage**: All shortcuts are saved and synced with your [Ya CLI](https://github.com/d3uceY/Ya-CLI) configuration
+
+<img src="https://github.com/user-attachments/assets/173a5639-7cee-4adc-b6a3-72c34cc78227"/>
 
 ## What is Ya CLI?
 
