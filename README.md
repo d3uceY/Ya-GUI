@@ -44,6 +44,8 @@ Visit the link above to grab the latest version for your platform.
 - **Inline Editing**: Edit shortcuts directly in the table without switching views
 - **Persistent Storage**: All shortcuts are saved and synced with your [Ya CLI](https://github.com/d3uceY/Ya-CLI) configuration
 
+- **Run Shortcut in Terminal**: Instantly open a new terminal window in your chosen directory and run the shortcut command interactively. See output and continue working in the shell of your choice.
+
 <img src="https://github.com/user-attachments/assets/173a5639-7cee-4adc-b6a3-72c34cc78227"/>
 
 ## What is Ya CLI?
