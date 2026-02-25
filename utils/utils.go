@@ -310,44 +310,86 @@ func UpdateDefaultDir(newDir string) error {
 }
 
 func ApplyShortcut(command string, context context.Context) error {
-	defaultDir, _ := getDefaultDirFromConfig()
+	       defaultDir, _ := getDefaultDirFromConfig()
 
-	var dialogOptions runtime.OpenDialogOptions
-	dialogOptions.Title = "Select Directory"
+	       var dialogOptions runtime.OpenDialogOptions
+	       dialogOptions.Title = "Select Directory"
 
-	if defaultDir != "" {
-		dialogOptions.DefaultDirectory = defaultDir
-	}
+	       if defaultDir != "" {
+		       dialogOptions.DefaultDirectory = defaultDir
+	       }
 
-	path, err := runtime.OpenDirectoryDialog(context, dialogOptions)
+	       path, err := runtime.OpenDirectoryDialog(context, dialogOptions)
 
-	if err != nil || path == "" {
-		return err
-	}
+	       if err != nil || path == "" {
+		       return err
+	       }
 
-	var cmd *exec.Cmd
-	if goRuntime.GOOS == "windows" {
-		cmd = exec.Command("powershell", "-NoProfile", "-NonInteractive", "-Command", command)
-	} else {
-		// for linux and macOS typeshit
-		cmd = exec.Command("bash", "-c", command)
-	}
+	       // Open a new terminal window in the selected directory, running the command interactively
+	       var termCmd *exec.Cmd
+	       if goRuntime.GOOS == "windows" {
+		       // Prefer Windows Terminal if available, fallback to PowerShell, then cmd
+		       // Try Windows Terminal
+		       wtPath, wtErr := exec.LookPath("wt")
+		       if wtErr == nil {
+			       // wt -d <dir> powershell -NoExit -Command <command>
+			       termCmd = exec.Command(wtPath, "-d", path, "powershell", "-NoExit", "-Command", command)
+		       } else {
+			       // Fallback to PowerShell
+			       psPath, psErr := exec.LookPath("powershell")
+			       if psErr == nil {
+				       // powershell -NoExit -Command <command>
+				       termCmd = exec.Command(psPath, "-NoExit", "-Command", command)
+				       termCmd.Dir = path
+			       } else {
+				       // Fallback to cmd.exe
+				       cmdPath, cmdErr := exec.LookPath("cmd")
+				       if cmdErr == nil {
+					       // cmd.exe /K <command>
+					       termCmd = exec.Command(cmdPath, "/K", command)
+					       termCmd.Dir = path
+				       } else {
+					       return errors.New("No suitable terminal found (wt, powershell, or cmd)")
+				       }
+			       }
+		       }
+	       } else {
+		       // For Linux/macOS: open a new terminal emulator if possible
+		       // Try gnome-terminal, x-terminal-emulator, konsole, xterm, or fallback to bash
+		       termCandidates := []string{"gnome-terminal", "x-terminal-emulator", "konsole", "xterm"}
+		       found := false
+		       for _, t := range termCandidates {
+			       tPath, tErr := exec.LookPath(t)
+			       if tErr == nil {
+				       // e.g. gnome-terminal -- bash -c '<command>; exec bash'
+				       termCmd = exec.Command(tPath, "--", "bash", "-c", command+"; exec bash")
+				       termCmd.Dir = path
+				       found = true
+				       break
+			       }
+		       }
+		       if !found {
+			       // Fallback: just run bash interactively in the directory
+			       bashPath, bashErr := exec.LookPath("bash")
+			       if bashErr == nil {
+				       termCmd = exec.Command(bashPath, "-c", command+"; exec bash")
+				       termCmd.Dir = path
+			       } else {
+				       return errors.New("No suitable terminal found (gnome-terminal, xterm, bash, etc.)")
+			       }
+		       }
+	       }
 
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
-	cmd.Dir = path
+	       // Start the terminal process detached from the current process
+	       if err := termCmd.Start(); err != nil {
+		       return err
+	       }
 
-	cmdError := cmd.Run()
-	if cmdError != nil {
-		return cmdError
-	}
+	       // Update the default directory
+	       err = UpdateDefaultDir(path)
+	       if err != nil {
+		       return err
+	       }
 
-	err = UpdateDefaultDir(path)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+	       return nil
 }
