@@ -310,12 +310,7 @@ func UpdateDefaultDir(newDir string) error {
 }
 
 func ApplyShortcut(command string, context context.Context) error {
-
-	defaultDir, err := getDefaultDirFromConfig()
-
-	if err != nil {
-		return err
-	}
+	defaultDir, _ := getDefaultDirFromConfig()
 
 	var dialogOptions runtime.OpenDialogOptions
 	dialogOptions.Title = "Select Directory"
