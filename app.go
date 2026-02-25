@@ -78,3 +78,7 @@ func (a *App) ImportShortcuts() error {
 func (a *App) CliExists(cmd string) bool {
 	return utils.CliExists(cmd)
 }
+
+func (a *App) ApplyShortcut(command string) bool {
+	return utils.ApplyShortcut(command, a.ctx) == nil
+}

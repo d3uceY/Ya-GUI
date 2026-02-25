@@ -4,6 +4,8 @@ import {main} from '../models';
 
 export function AddShortcut(arg1:string,arg2:string):Promise<main.shortcuts>;
 
+export function ApplyShortcut(arg1:string):Promise<boolean>;
+
 export function CliExists(arg1:string):Promise<boolean>;
 
 export function ExportShortcuts():Promise<void>;
