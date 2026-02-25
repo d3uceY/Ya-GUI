@@ -100,7 +100,8 @@ For example:
 3. A new terminal window will open in that directory, running the command interactively.
 4. You can see the output and continue working in the shell.
 
-<img width="509" height="270" alt="image" src="https://github.com/user-attachments/assets/110bc1c7-a2fe-4a8c-b847-43e446ed247e" />
+<img width="499" height="299" alt="image" src="https://github.com/user-attachments/assets/7fae1afe-29c9-4ebd-b700-22affbd45d55" />
+
 
 ### Deleting a Shortcut
 
