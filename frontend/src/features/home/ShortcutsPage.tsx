@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Edit2, Save, Trash2, Search } from "lucide-react"
+import { Edit2, Save, Trash2, Search, TerminalSquare } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,7 +21,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-import { GetShortcuts, AddShortcut, RemoveShortcut } from '../../../wailsjs/go/main/App'
+import { GetShortcuts, AddShortcut, RemoveShortcut, ApplyShortcut } from '../../../wailsjs/go/main/App'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 
@@ -77,6 +77,14 @@ export default function ShortcutsPage() {
             console.error("Error removing shortcut:", error)
         }
     }
+
+        const handleApplyShortcut = async (command: string) => {
+            try {
+                await ApplyShortcut(command)
+            } catch (error) {
+                alert("Error running shortcut: " + error)
+            }
+        }
 
     const formattedShortcuts = Object.entries(shortcuts).map(([name, command]) => ({ name, command }))
 
@@ -158,6 +166,13 @@ export default function ShortcutsPage() {
                                                         variant="ghost" size="icon" className="h-9 w-9 text-blue-400 hover:bg-blue-900/50 hover:text-blue-300">
                                                         <Edit2 className="w-4 h-4" />
                                                     </Button>}
+                                                    <Button
+                                                        onClick={() => handleApplyShortcut(shortcut.command)}
+                                                        variant="ghost" size="icon" className="h-9 w-9 text-green-400 hover:bg-green-900/50 hover:text-green-300"
+                                                        title="Run Shortcut Command"
+                                                    >
+                                                        <TerminalSquare className="w-4 h-4" />
+                                                    </Button>
                                                 <AlertDialog>
                                                     <AlertDialogTrigger asChild>
                                                         <Button variant="ghost" size="icon" className="h-9 w-9 text-red-400 hover:bg-red-900/50 hover:text-red-300">
