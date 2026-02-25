@@ -3,17 +3,18 @@ package utils
 import (
 	"context"
 	"encoding/json"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"os"
 	"os/exec"
 	"path/filepath"
+	goRuntime "runtime"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 func CliExists(cmd string) bool {
 	_, err := exec.LookPath(cmd)
 	return err == nil
 }
-
 
 func getAppDataDir() (string, error) {
 	dir, err := os.UserConfigDir()
@@ -231,5 +232,33 @@ func ImportShortcuts(context context.Context) error {
 	return os.WriteFile(shortCutpath, data, 0644)
 }
 
+func ApplyShortcut(command string, context context.Context) error {
+	path, err := runtime.OpenDirectoryDialog(context, runtime.OpenDialogOptions{
+		Title: "Apply command to path",
+	})
 
+	if err != nil || path == "" {
+		return err
+	}
 
+	// if we are here, detect if it is windows, you get?
+	var cmd *exec.Cmd
+	if goRuntime.GOOS == "windows" {
+		cmd = exec.Command("powershell", "-NoProfile", "-NonInteractive", "-Command", command)
+	} else {
+		// for linux and macOS typeshit
+		cmd = exec.Command("bash", "-c", command)
+	}
+
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	cmd.Dir = path
+
+	cmdError := cmd.Run()
+	if cmdError != nil {
+		return cmdError
+	}
+
+	return nil
+}
