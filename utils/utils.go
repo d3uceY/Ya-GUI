@@ -3,12 +3,12 @@ package utils
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"os"
 	"os/exec"
 	"path/filepath"
 	goRuntime "runtime"
-
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 func CliExists(cmd string) bool {
@@ -232,16 +232,104 @@ func ImportShortcuts(context context.Context) error {
 	return os.WriteFile(shortCutpath, data, 0644)
 }
 
+// GetConfig retrieves all configuration from storage
+func GetConfig() (map[string]string, error) {
+
+	appDir, err := getAppDataDir()
+	if err != nil {
+		panic(err)
+	}
+
+	configPath := filepath.Join(appDir, "config.json")
+
+	data, err := os.ReadFile(configPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			// Create file with empty JSON object
+			emptyConfig := map[string]string{}
+			data, err := json.MarshalIndent(emptyConfig, "", "  ")
+			if err != nil {
+				return nil, err
+			}
+			err = os.WriteFile(configPath, data, 0644)
+			if err != nil {
+				return nil, err
+			}
+			return emptyConfig, nil
+		}
+		return nil, err
+	}
+
+	var config map[string]string
+	err = json.Unmarshal(data, &config)
+	if err != nil {
+		return nil, err
+	}
+
+	return config, nil
+}
+
+func getDefaultDirFromConfig() (string, error) {
+	config, err := GetConfig()
+
+	if err != nil {
+		return "", err
+	}
+
+	defaultDir, exists := config["defaultDir"]
+	if !exists {
+		return "", errors.New("defaultDir not found in config")
+	}
+
+	return defaultDir, nil
+}
+
+func UpdateDefaultDir(newDir string) error {
+	config, err := GetConfig()
+
+	if err != nil {
+		return err
+	}
+	config["defaultDir"] = newDir
+
+	data, err := json.MarshalIndent(config, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	appDir, err := getAppDataDir()
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(filepath.Join(appDir, "config.json"), data, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func ApplyShortcut(command string, context context.Context) error {
-	path, err := runtime.OpenDirectoryDialog(context, runtime.OpenDialogOptions{
-		Title: "Apply command to path",
-	})
+
+	defaultDir, err := getDefaultDirFromConfig()
+
+	if err != nil {
+		return err
+	}
+
+	var dialogOptions runtime.OpenDialogOptions
+	dialogOptions.Title = "Select Directory"
+
+	if defaultDir != "" {
+		dialogOptions.DefaultDirectory = defaultDir
+	}
+
+	path, err := runtime.OpenDirectoryDialog(context, dialogOptions)
 
 	if err != nil || path == "" {
 		return err
 	}
 
-	// if we are here, detect if it is windows, you get?
 	var cmd *exec.Cmd
 	if goRuntime.GOOS == "windows" {
 		cmd = exec.Command("powershell", "-NoProfile", "-NonInteractive", "-Command", command)
@@ -258,6 +346,12 @@ func ApplyShortcut(command string, context context.Context) error {
 	cmdError := cmd.Run()
 	if cmdError != nil {
 		return cmdError
+	}
+
+	err = UpdateDefaultDir(path)
+
+	if err != nil {
+		return err
 	}
 
 	return nil
