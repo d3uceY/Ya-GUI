@@ -92,7 +92,7 @@ export default function ShortcutsPage() {
         shortcut.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         shortcut.command.toLowerCase().includes(searchQuery.toLowerCase())
     )
-    const truncateCommand = (text: string, maxLength: number = 37) => {
+    const truncateCommand = (text: string, maxLength: number = 20) => {
         if (text.length <= maxLength) return text
         return text.slice(0, maxLength) + '...'
     }
@@ -101,7 +101,7 @@ export default function ShortcutsPage() {
     return (
         <div className="flex flex-col h-full p-8 pt-4 max-w-6xl mx-auto">
             {/* Shortcuts Table */}
-            <Card className="mb-8 flex-1 pt-0 overflow-hidden flex flex-col border-2 bg-slate-800/50 border-slate-700">
+            <Card className="mb-8 flex-1 pt-0 overflow-y-hidden flex flex-col border-2 bg-slate-800/50 border-slate-700">
                 <CardHeader className="border-b pt-6 border-slate-700 bg-slate-900/50">
                     <CardTitle className="text-xl text-blue-100">Your Shortcuts</CardTitle>
                     <div className="mt-4">
@@ -116,7 +116,7 @@ export default function ShortcutsPage() {
                         </div>
                     </div>
                 </CardHeader>
-                <CardContent className="flex-1 overflow-x-auto p-0">
+                <CardContent className="flex-1 p-0">
                     <ScrollArea className="h-80">
                         <Table>
                             <TableHeader>
