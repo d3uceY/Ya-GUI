@@ -92,6 +92,16 @@ For example:
 
 <img width="500" height="270" alt="image" src="https://github.com/user-attachments/assets/4ff1624f-4b25-4d90-9374-48b0ef10985e" />
 
+
+### Running a Shortcut in a Terminal
+
+1. Click the **Run** (terminal) icon next to the shortcut you want to execute.
+2. Choose the directory where you want the command to run.
+3. A new terminal window will open in that directory, running the command interactively.
+4. You can see the output and continue working in the shell.
+
+<img width="509" height="270" alt="image" src="https://github.com/user-attachments/assets/110bc1c7-a2fe-4a8c-b847-43e446ed247e" />
+
 ### Deleting a Shortcut
 
 1. Click the **Delete** (trash) icon next to the shortcut
