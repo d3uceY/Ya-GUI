@@ -121,6 +121,11 @@ You can embed placeholders in a command using curly braces, e.g. `git checkout {
 2. A dialog appears asking you to fill in each variable
 3. Once all fields are filled, click **Continue** to proceed to directory selection
 
+4. <img width="555" height="110" alt="image" src="https://github.com/user-attachments/assets/61880322-61d9-4e28-82ce-5f5735a079cf" />
+   <img width="460" height="268" alt="image" src="https://github.com/user-attachments/assets/b15a4ef6-d794-4a8b-9e14-51ceaf7a9890" />
+
+
+
 ### Running a Shortcut in a Terminal
 
 1. Click the **Run** (terminal) icon next to the shortcut you want to execute
@@ -182,11 +187,17 @@ Every shortcut execution is recorded automatically.
 2. Choose from **Auto-detect**, **Windows Terminal (wt)**, **PowerShell**, **Command Prompt**, or **Bash**
 3. Your choice is saved and used for every subsequent shortcut run
 
+4. <img width="626" height="386" alt="image" src="https://github.com/user-attachments/assets/84ebdd24-5cc9-4ba4-b982-e73de7c1c825" />
+
+
 
 ### Start on Boot
 
 1. Go to **Settings → Start on Boot**
 2. Toggle the switch to have Ya-GUI launch automatically when you log into your computer
+
+3. <img width="579" height="199" alt="image" src="https://github.com/user-attachments/assets/5e670dbc-4814-4f7e-a982-2aa0504f377a" />
+
 
 
 ### Deleting a Shortcut
