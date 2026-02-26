@@ -1,54 +1,173 @@
-name: Wails build
+name: build
 
 on:
   push:
+    branches: 
+      - main
     tags:
-    # Match any new tag
-      - '*'
-
-env:
-  # Necessary for most environments as build failure can occur due to OOM issues
-  NODE_OPTIONS: "--max-old-space-size=4096"
+      - 'v*'
 
 jobs:
-  build:
-    strategy:
-    # Failure in one platform build won't impact the others
-      fail-fast: false
-      matrix:
-        build:
-          - name: 'YaGUI'
-            platform:  'linux/amd64'
-            os: 'ubuntu-22.04'
-          - name: 'YaGUI'
-            platform:  'windows/amd64'
-            os: 'windows-latest'
-          - name: 'YaGUI'
-            platform:  'darwin/universal'
-            os: 'macos-latest'
 
-    runs-on: ${{ matrix.build.os }}
+  build-linux-amd64:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
+      - uses: actions/checkout@v5
 
-      - name: Build wails
-        uses: dAppServer/wails-build-action@main
-        id: build
+      - uses: pnpm/action-setup@v4
         with:
-          build-name: ${{ matrix.build.name }}
-          build-platform: ${{ matrix.build.platform }}
-          package: false
-          go-version: '1.23'
+          version: 10
 
-       # Upload build artifacts
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+      - uses: actions/setup-go@v5
         with:
-          name: ${{ matrix.build.name }}-${{ matrix.build.os }}
-          path: |
-            build/bin/*.app       
-            build/bin/*.exe        
-            build/bin/*           
+          go-version: '1.25'
+
+      - run: |
+          sudo apt update
+          sudo apt install -y build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.1-dev
+
+      - run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - name: Build Linux binaries
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binaries-linux
+          path: build/*.zip
+
+
+  build-linux-arm64:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
+      - run: |
+          sudo apt update
+          sudo apt install -y build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.1-dev
+
+      - run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binaries-linux-arm64
+          path: build/*.zip
+
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
+      - run: |
+          go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binaries-macos
+          path: build/*.zip
+
+
+  build-windows-amd64:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
+      - run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binaries-windows-amd64
+          path: build/*.zip
+
+
+  build-windows-arm64:
+    runs-on: windows-11-arm
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: CLANGARM64
+          update: true
+          install: mingw-w64-clang-aarch64-gcc-compat
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
+      - run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - name: Build Windows ARM64
+        shell: msys2 {0}
+        env:
+          MSYS2_PATH_TYPE: inherit
+          MSYSTEM: CLANGARM64
+          CC: aarch64-w64-mingw32-gcc
+          CXX: aarch64-w64-mingw32-g++
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binaries-windows-arm64
+          path: build/*.zip
+
+
+  release:
+    runs-on: ubuntu-latest
+    needs:
+      - build-linux-arm64
+      - build-linux-amd64
+      - build-macos
+      - build-windows-amd64
+      - build-windows-arm64
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: binaries
+          merge-multiple: true
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Create changelog
+        run: |
+          pnpm install -g release-it @release-it/conventional-changelog@10.0.1
+          release-it --ci
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          name: ${{ github.ref_name }}
+          tag: ${{ github.ref_name }}
+          bodyFile: CHANGELOG.md
+          replacesArtifacts: true
+          artifacts: binaries/*.zip
+ 
