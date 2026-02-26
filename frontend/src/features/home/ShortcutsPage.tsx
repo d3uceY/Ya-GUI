@@ -96,7 +96,7 @@ export default function ShortcutsPage() {
     return (
         <div className="flex flex-col h-full p-8 pt-4 max-w-8xl mx-auto">
             {/* Shortcuts Table */}
-            <Card className="mb-8 flex-1 pt-0 overflow-y-hidden flex flex-col border-2 bg-slate-800/50 border-slate-700">
+            <Card className="mb-8 pt-0 overflow-y-hidden flex flex-col border-2 bg-slate-800/50 border-slate-700">
                 <CardHeader className="border-b pt-6 border-slate-700 bg-slate-900/50">
                     <CardTitle className="text-xl text-blue-100">Your Shortcuts</CardTitle>
                     <div className="mt-4">
@@ -112,12 +112,12 @@ export default function ShortcutsPage() {
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <ScrollArea className="h-full">
+                    <ScrollArea className="h-100">
                         <Table>
                             <TableHeader>
                                 <TableRow className="border-b-2 border-slate-700 hover:bg-transparent">
                                     <TableHead className="w-48 font-bold text-blue-200">Shortcut</TableHead>
-                                    <TableHead className="flex-1 font-bold text-blue-200">Command</TableHead>
+                                    <TableHead className="font-bold text-blue-200">Command</TableHead>
                                     <TableHead className="w-32 text-center font-bold text-blue-200">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
