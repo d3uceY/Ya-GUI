@@ -101,10 +101,7 @@ jobs:
           path: binaries
           merge-multiple: true
 
-      - uses: ncipollo/release-action@v1
+      - uses: softprops/action-gh-release@v2
         with:
-          name: ${{ github.ref_name }}
-          tag: ${{ github.ref_name }}
-          generateReleaseNotes: true
-          replacesArtifacts: true
-          artifacts: binaries/*
+          generate_release_notes: true
+          files: binaries/*
