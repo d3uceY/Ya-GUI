@@ -170,3 +170,4 @@ jobs:
           bodyFile: CHANGELOG.md
           replacesArtifacts: true
           artifacts: binaries/*.zip
+ 
