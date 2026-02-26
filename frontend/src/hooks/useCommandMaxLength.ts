@@ -12,10 +12,10 @@ export function useCommandMaxLength(): number {
     const isSm  = useMediaQuery("(min-width: 640px)")
 
     switch (true) {
-        case is2xl: return 80
-        case isXl:  return 60
-        case isLg:  return 45
-        case isMd:  return 30
+        case is2xl: return 150
+        case isXl:  return 100
+        case isLg:  return 80
+        case isMd:  return 65
         case isSm:  return 20
         default:    return 14
     }
