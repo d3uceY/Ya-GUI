@@ -111,14 +111,14 @@ export default function ShortcutsPage() {
                         </div>
                     </div>
                 </CardHeader>
-                <CardContent className="flex-1 p-0">
-                    <ScrollArea className="h-80">
+                <CardContent className="p-0">
+                    <ScrollArea className="h-full">
                         <Table>
                             <TableHeader>
                                 <TableRow className="border-b-2 border-slate-700 hover:bg-transparent">
                                     <TableHead className="w-48 font-bold text-blue-200">Shortcut</TableHead>
                                     <TableHead className="flex-1 font-bold text-blue-200">Command</TableHead>
-                                    <TableHead className="w-32 text-right font-bold text-blue-200">Actions</TableHead>
+                                    <TableHead className="w-32 text-center font-bold text-blue-200">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -201,7 +201,7 @@ export default function ShortcutsPage() {
             </Card>
 
             {/* Add New Shortcut Form */}
-            <Card className="border-2 bg-slate-800/50 pt-0 overflow-hidden border-slate-700">
+            <Card className="border-2 flex-1 bg-slate-800/50 pt-0 overflow-hidden border-slate-700">
                 <CardHeader className="border-b pt-6 border-slate-700 bg-slate-900/50">
                     <CardTitle className="text-xl text-blue-100">Add New Shortcut</CardTitle>
                 </CardHeader>

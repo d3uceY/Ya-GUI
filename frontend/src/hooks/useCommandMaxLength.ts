@@ -15,7 +15,7 @@ export function useCommandMaxLength(): number {
         case is2xl: return 150
         case isXl:  return 100
         case isLg:  return 80
-        case isMd:  return 65
+        case isMd:  return 40
         case isSm:  return 20
         default:    return 14
     }
