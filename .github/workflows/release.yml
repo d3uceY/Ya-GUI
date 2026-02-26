@@ -23,13 +23,10 @@ jobs:
       - run: |
           sudo apt update
           sudo apt install -y build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.1-dev
-          pnpm install -g @go-task/cli
 
-      - run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+      - run: go install github.com/wailsapp/wails/v3/cmd/wails3@latest
 
       - name: Build Linux binaries
-        run: |
-          task package archs=amd64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -51,11 +48,9 @@ jobs:
       - run: |
           sudo apt update
           sudo apt install -y build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.1-dev
-          pnpm install -g @go-task/cli
 
-      - run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+      - run: go install github.com/wailsapp/wails/v3/cmd/wails3@latest
 
-      - run: task package archs=arm64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -75,10 +70,7 @@ jobs:
           go-version: '1.25'
 
       - run: |
-          go install github.com/wailsapp/wails/v2/cmd/wails@latest
-          pnpm install -g @go-task/cli
-
-      - run: task package archs='amd64 arm64'
+          go install github.com/wailsapp/wails/v3/cmd/wails3@latest
 
       - uses: actions/upload-artifact@v4
         with:
@@ -97,10 +89,8 @@ jobs:
         with:
           go-version: '1.25'
 
-      - run: pnpm install -g @go-task/cli
-      - run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+      - run: go install github.com/wailsapp/wails/v3/cmd/wails3@latest
 
-      - run: task package archs=amd64
 
       - uses: actions/upload-artifact@v4
         with:
@@ -127,8 +117,7 @@ jobs:
         with:
           go-version: '1.25'
 
-      - run: pnpm install -g @go-task/cli
-      - run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+      - run: go install github.com/wailsapp/wails/v3/cmd/wails3@latest
 
       - name: Build Windows ARM64
         shell: msys2 {0}
@@ -137,7 +126,6 @@ jobs:
           MSYSTEM: CLANGARM64
           CC: aarch64-w64-mingw32-gcc
           CXX: aarch64-w64-mingw32-g++
-        run: task package archs=arm64
 
       - uses: actions/upload-artifact@v4
         with:
