@@ -64,7 +64,7 @@ jobs:
       - name: Rename macOS binary
         run: |
           mkdir -p build/bin/renamed
-          mv build/bin/YaGUI build/bin/renamed/YaGUI-macos-amd64
+          mv build/bin/YaGUI.app build/bin/renamed/YaGUI-macos-amd64.app
 
       - uses: actions/upload-artifact@v4
         with:
