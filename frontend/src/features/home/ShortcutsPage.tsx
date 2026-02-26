@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useMediaQuery } from "@/hooks/useMediaQuery"
 import { Edit2, Save, Trash2, Search, TerminalSquare } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -92,6 +93,25 @@ export default function ShortcutsPage() {
         shortcut.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         shortcut.command.toLowerCase().includes(searchQuery.toLowerCase())
     )
+    const is2xl = useMediaQuery("(min-width: 1536px)")
+    const isXl  = useMediaQuery("(min-width: 1280px)")
+    const isLg  = useMediaQuery("(min-width: 1024px)")
+    const isMd  = useMediaQuery("(min-width: 768px)")
+    const isSm  = useMediaQuery("(min-width: 640px)")
+
+    const getCommandMaxLength = (): number => {
+        switch (true) {
+            case is2xl: return 80
+            case isXl:  return 60
+            case isLg:  return 45
+            case isMd:  return 30
+            case isSm:  return 20
+            default:    return 14
+        }
+    }
+
+    const commandMaxLength = getCommandMaxLength()
+
     const truncateCommand = (text: string, maxLength: number = 20) => {
         if (text.length <= maxLength) return text
         return text.slice(0, maxLength) + '...'
@@ -143,7 +163,7 @@ export default function ShortcutsPage() {
                                                 />
                                             ) : (
                                                 <code className="px-3 py-1.5 rounded bg-slate-900 text-blue-300 font-mono text-sm border border-slate-700" title={shortcut.command}>
-                                                    {truncateCommand(shortcut.command)}
+                                                    {truncateCommand(shortcut.command, commandMaxLength)}
                                                 </code>
                                             )}
                                         </TableCell>
