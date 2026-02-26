@@ -41,7 +41,7 @@ export default function DirectoryPickerDialog({ open, savedDirectories, onConfir
 
     return (
         <AlertDialog open={open}>
-            <AlertDialogContent className="border-2 bg-slate-800 border-slate-700 max-w-md">
+            <AlertDialogContent className="border-2 bg-slate-800 border-slate-700 max-w-fit!">
                 <AlertDialogTitle className="text-xl font-bold text-blue-100">
                     Choose a Directory
                 </AlertDialogTitle>
@@ -72,7 +72,7 @@ export default function DirectoryPickerDialog({ open, savedDirectories, onConfir
                 <Button
                     variant="ghost"
                     onClick={handleBrowse}
-                    className="w-full border-2 border-dashed border-slate-600 text-slate-300 hover:border-blue-500 hover:text-blue-200 mt-2"
+                    className="w-full border-2 border-dashed border-slate-600 text-slate-300 hover:border-blue-500 hover:text-blue-500 mt-2"
                 >
                     <FolderOpen className="w-4 h-4 mr-2" />
                     Browse for directory…
@@ -87,7 +87,7 @@ export default function DirectoryPickerDialog({ open, savedDirectories, onConfir
 
                 <div className="flex gap-3 justify-end mt-2">
                     <AlertDialogCancel
-                        className="border-2 border-slate-600 bg-slate-900 text-slate-200 hover:bg-slate-800"
+                        className="border-2 border-slate-600 bg-slate-900 hover:text-white! text-white hover:bg-slate-800"
                         onClick={handleCancel}
                     >
                         Cancel
