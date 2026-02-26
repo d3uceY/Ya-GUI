@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ImportShortcuts, ExportShortcuts } from "../../../wailsjs/go/main/App"
 import { useVersion } from "@/contexts/VersionContext"
+import { formatReleaseDate } from "@/lib/dateHelpers"
 
 
 export default function SettingsPage() {
@@ -65,7 +66,7 @@ export default function SettingsPage() {
                             <div className="space-y-2 mb-4">
                                 <div className="flex items-center justify-between py-2 px-3 rounded bg-slate-900/50 border border-slate-700">
                                     <span className="text-xs font-bold text-slate-400">Release Date</span>
-                                    <span className="text-sm text-blue-200">{new Date(updateAvailable.releaseDate).toLocaleDateString()}</span>
+                                    <span className="text-sm text-blue-200">{formatReleaseDate(updateAvailable.releaseDate)}</span>
                                 </div>
                             </div>
                             <a
