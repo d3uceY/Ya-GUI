@@ -201,7 +201,7 @@ func ImportShortcuts(context context.Context) error {
 		}
 	}
 
-	// for some reason, i forgot maps only store unique keys 😂
+	// for some reason, i forgot maps only store unique keys
 	var currentShortcuts map[string]string
 	err = json.Unmarshal(currentShortcutData, &currentShortcuts)
 

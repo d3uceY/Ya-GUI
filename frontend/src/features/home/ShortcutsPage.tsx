@@ -99,7 +99,7 @@ export default function ShortcutsPage() {
 
 
     return (
-        <div className="flex flex-col h-full p-8 pt-4 max-w-6xl mx-auto">
+        <div className="flex flex-col h-full p-8 pt-4 max-w-8xl mx-auto">
             {/* Shortcuts Table */}
             <Card className="mb-8 flex-1 pt-0 overflow-y-hidden flex flex-col border-2 bg-slate-800/50 border-slate-700">
                 <CardHeader className="border-b pt-6 border-slate-700 bg-slate-900/50">

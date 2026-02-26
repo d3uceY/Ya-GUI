@@ -21,11 +21,9 @@ func main() {
 	err := wails.Run(&options.App{
 		Title:         "YaGUI",
 		Width:         800,
-		MaxWidth:      800,
 		Height:        600,
 		MinHeight:     400,
 		MinWidth:      800,
-		DisableResize: true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
