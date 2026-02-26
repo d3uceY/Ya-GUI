@@ -13,8 +13,9 @@ export default function Layout() {
     switch (location.pathname) {
       case "/":
         WindowSetTitle("Ya - GUI | Command Alias Manager");
-        return "Command Alias Manager";
-      case "/settings":
+        return "Command Alias Manager";      case "/history":
+        WindowSetTitle("Ya - GUI | Run History");
+        return "Run History";      case "/settings":
         WindowSetTitle("Ya - GUI | Settings");
         return "Settings";
       default: return "";

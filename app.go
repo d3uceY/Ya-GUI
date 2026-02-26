@@ -1,4 +1,4 @@
-package main
+﻿package main
 
 import (
 	"context"
@@ -7,57 +7,51 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-// App struct
 type App struct {
 	ctx context.Context
 }
 
-// shortcuts map[string]string
-type shortcuts map[string]string
-
-// NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
+}
+
+func (a *App) startup(ctx context.Context) {
+	a.ctx = ctx
 }
 
 func (a *App) GetVersion() string {
 	return AppVersion
 }
 
-// startup is called when the app starts. The context is saved
-// so we can call the runtime methods
-func (a *App) startup(ctx context.Context) {
-	a.ctx = ctx
-}
+//  Shortcuts
 
-// AddShortcut adds a new shortcut and returns all shortcuts
-func (a *App) AddShortcut(name, command string) (shortcuts, error) {
-	err := utils.AddShortcut(name, command)
-	if err != nil {
-		return nil, err
-	}
-
-	// Get all shortcuts after adding
-	shortcuts, err := utils.GetShortcuts()
-	if err != nil {
-		return nil, err
-	}
-
-	return shortcuts, nil
-}
-
-// GetShortcuts returns all shortcuts
-func (a *App) GetShortcuts() (shortcuts, error) {
+func (a *App) GetShortcuts() (map[string]utils.ShortcutData, error) {
 	return utils.GetShortcuts()
 }
 
-// getRemoveShortcut removes a shortcut by name and returns all shortcuts
-func (a *App) RemoveShortcut(name string) error {
-	err := utils.RemoveShortcut(name)
-	if err != nil {
-		return err
+// AddShortcut creates or replaces a shortcut. tags is comma-separated.
+func (a *App) AddShortcut(name, command, description, tags string) (map[string]utils.ShortcutData, error) {
+	if err := utils.AddShortcut(name, command, description, tags); err != nil {
+		return nil, err
 	}
-	return nil
+	return utils.GetShortcuts()
+}
+
+// UpdateShortcut edits an existing shortcut's metadata.
+func (a *App) UpdateShortcut(name, command, description, tags string) error {
+	return utils.UpdateShortcut(name, command, description, tags)
+}
+
+func (a *App) RemoveShortcut(name string) error {
+	return utils.RemoveShortcut(name)
+}
+
+func (a *App) TogglePinShortcut(name string) error {
+	return utils.TogglePinShortcut(name)
+}
+
+func (a *App) DuplicateShortcut(name string) (map[string]utils.ShortcutData, error) {
+	return utils.DuplicateShortcut(name)
 }
 
 func (a *App) ExportShortcuts() error {
@@ -69,16 +63,69 @@ func (a *App) ImportShortcuts() error {
 	if a.ctx != nil {
 		runtime.EventsEmit(a.ctx, "shortcuts:changed")
 	}
-	if err != nil {
-		return err
+	return err
+}
+
+//  Terminal & directory
+
+// SelectDirectory opens the native directory picker and returns the chosen path.
+func (a *App) SelectDirectory() (string, error) {
+	cfg, _ := utils.GetConfig()
+	opts := runtime.OpenDialogOptions{Title: "Select Directory"}
+	if cfg.DefaultDir != "" {
+		opts.DefaultDirectory = cfg.DefaultDir
 	}
-	return nil
+	return runtime.OpenDirectoryDialog(a.ctx, opts)
+}
+
+// ApplyShortcut launches shortcutName's command in dirPath, records history.
+func (a *App) ApplyShortcut(shortcutName, command, dirPath string) bool {
+	cfg, _ := utils.GetConfig()
+	if err := utils.LaunchInTerminal(command, dirPath, cfg.PreferredTerminal); err != nil {
+		return false
+	}
+	_ = utils.UpdateDefaultDir(dirPath)
+	_ = utils.AddRunHistoryEntry(shortcutName, command, dirPath)
+	_ = utils.IncrementRunCount(shortcutName)
+	return true
 }
 
 func (a *App) CliExists(cmd string) bool {
 	return utils.CliExists(cmd)
 }
 
-func (a *App) ApplyShortcut(command string) bool {
-	return utils.ApplyShortcut(command, a.ctx) == nil
+//  Config
+
+func (a *App) GetConfig() (utils.AppConfig, error) {
+	return utils.GetConfig()
+}
+
+func (a *App) SetPreferredTerminal(terminal string) error {
+	return utils.SetPreferredTerminal(terminal)
+}
+
+func (a *App) SetStartOnBoot(enabled bool) error {
+	return utils.SetStartOnBoot(enabled)
+}
+
+func (a *App) GetStartOnBoot() bool {
+	return utils.GetStartOnBoot()
+}
+
+func (a *App) AddSavedDirectory(name, path string) error {
+	return utils.AddSavedDirectory(name, path)
+}
+
+func (a *App) RemoveSavedDirectory(name string) error {
+	return utils.RemoveSavedDirectory(name)
+}
+
+//  History
+
+func (a *App) GetRunHistory() ([]utils.RunHistoryEntry, error) {
+	return utils.GetRunHistory()
+}
+
+func (a *App) ClearRunHistory() error {
+	return utils.ClearRunHistory()
 }

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom"
-import { Menu, Settings } from "lucide-react"
+import { Menu, Settings, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useVersion } from "@/contexts/VersionContext"
@@ -10,6 +10,7 @@ export default function Sidebar() {
 
   const navItems = [
     { path: "/", label: "My Shortcuts", icon: Menu },
+    { path: "/history", label: "Run History", icon: Clock },
     { path: "/settings", label: "Settings", icon: Settings },
   ]
 

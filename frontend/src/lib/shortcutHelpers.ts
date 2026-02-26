@@ -1,21 +1,40 @@
-export type Shortcut = { name: string; command: string }
+﻿import type { Shortcut, ShortcutData } from "@/types"
 
 /**
- * Converts the raw Record<string, string> returned by GetShortcuts into
- * a flat array of { name, command } objects.
+ * Converts the raw Record<string, ShortcutData> returned by GetShortcuts
+ * into a flat array of Shortcut objects, pinned entries first.
  */
-export function formatShortcuts(shortcuts: Record<string, string>): Shortcut[] {
-    return Object.entries(shortcuts).map(([name, command]) => ({ name, command }))
+export function formatShortcuts(shortcuts: Record<string, ShortcutData>): Shortcut[] {
+    const list: Shortcut[] = Object.entries(shortcuts).map(([name, data]) => ({
+        name,
+        command: data.command,
+        description: data.description ?? "",
+        tags: data.tags ?? [],
+        pinned: data.pinned ?? false,
+        runCount: data.runCount ?? 0,
+        lastRun: data.lastRun ?? "",
+    }))
+    return list.sort((a, b) => {
+        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1
+        return a.name.localeCompare(b.name)
+    })
 }
 
 /**
- * Filters a list of shortcuts by a search query against both name and command.
+ * Filters shortcuts by search query (name, command, description, tags).
  */
-export function filterShortcuts(shortcuts: Shortcut[], query: string): Shortcut[] {
+export function filterShortcuts(shortcuts: Shortcut[], query: string, activeTag?: string): Shortcut[] {
     const q = query.toLowerCase()
-    return shortcuts.filter(
-        (s) => s.name.toLowerCase().includes(q) || s.command.toLowerCase().includes(q)
-    )
+    return shortcuts.filter((s) => {
+        const matchesTag = !activeTag || s.tags.includes(activeTag)
+        const matchesSearch =
+            !q ||
+            s.name.toLowerCase().includes(q) ||
+            s.command.toLowerCase().includes(q) ||
+            s.description.toLowerCase().includes(q) ||
+            s.tags.some((t) => t.toLowerCase().includes(q))
+        return matchesTag && matchesSearch
+    })
 }
 
 /**
@@ -24,4 +43,28 @@ export function filterShortcuts(shortcuts: Shortcut[], query: string): Shortcut[
 export function truncateCommand(text: string, maxLength: number = 20): string {
     if (text.length <= maxLength) return text
     return text.slice(0, maxLength) + "..."
+}
+
+/**
+ * Extracts all unique tags across all shortcuts.
+ */
+export function collectAllTags(shortcuts: Shortcut[]): string[] {
+    const set = new Set<string>()
+    shortcuts.forEach((s) => s.tags.forEach((t) => set.add(t)))
+    return Array.from(set).sort()
+}
+
+/**
+ * Detects {variable} placeholders in a command string.
+ */
+export function extractVariables(command: string): string[] {
+    const matches = command.match(/\{([^}]+)\}/g) ?? []
+    return [...new Set(matches.map((m) => m.slice(1, -1)))]
+}
+
+/**
+ * Replaces {variable} placeholders with provided values.
+ */
+export function substituteVariables(command: string, values: Record<string, string>): string {
+    return command.replace(/\{([^}]+)\}/g, (_, name) => values[name] ?? `{${name}}`)
 }
