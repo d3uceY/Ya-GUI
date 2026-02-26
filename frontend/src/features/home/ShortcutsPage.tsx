@@ -167,7 +167,7 @@ export default function ShortcutsPage() {
     const filtered = filterShortcuts(allShortcuts, searchQuery, activeTag ?? undefined)
 
     return (
-        <div className="flex flex-col h-full p-8 pt-4 max-w-8xl mx-auto">
+        <div className="flex flex-col h-full p-8 pt-4 max-w-6xl mx-auto">
             <EditShortcutDialog
                 open={editDialog.open}
                 shortcut={editDialog.shortcut}
@@ -227,7 +227,7 @@ export default function ShortcutsPage() {
                         <Table>
                             <TableHeader>
                                 <TableRow className="border-b-2 border-slate-700 hover:bg-transparent">
-                                    <TableHead className="w-44 font-bold text-blue-200">Shortcut</TableHead>
+                                    <TableHead className="w-44 font-bold text-blue-200 pl-8!">Shortcut</TableHead>
                                     <TableHead className="font-bold text-blue-200">Command</TableHead>
                                     <TableHead className="w-44 text-center font-bold text-blue-200">Actions</TableHead>
                                 </TableRow>
@@ -237,7 +237,7 @@ export default function ShortcutsPage() {
                                     return (
                                         <TableRow key={shortcut.name} className={`hover:bg-slate-900/50 border-b border-slate-700/50 ${shortcut.pinned ? "bg-blue-950/20" : ""}`}>
                                             <TableCell className="py-3 align-top">
-                                                <div className="flex flex-col gap-1">
+                                                <div className="flex flex-col gap-1 pl-4">
                                                     <Badge variant="secondary" className="font-bold text-sm px-3 py-1 bg-blue-900/50 text-blue-200 border border-blue-700 w-fit">
                                                         {shortcut.pinned && <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400 inline" />}
                                                         {shortcut.name}
