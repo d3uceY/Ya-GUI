@@ -128,7 +128,7 @@ export default function ShortcutsPage() {
     }
 
     const handleDuplicate = async (name: string) => {
-        try {
+        try {           
             const updated = await DuplicateShortcut(name)
             setShortcuts(updated)
         } catch (err) {
@@ -257,7 +257,7 @@ export default function ShortcutsPage() {
                                                     <code className="px-3 py-1.5 rounded bg-slate-900 text-blue-300 font-mono text-sm border border-slate-700" title={shortcut.command}>
                                                         {truncateCommand(shortcut.command, commandMaxLength)}
                                                     </code>
-                                                    {shortcut.description && <p className="text-xs text-slate-400 pl-1">{shortcut.description}</p>}
+                                                    {shortcut.description && <p className="text-xs text-slate-400 pl-1 mt-3">{shortcut.description}</p>}
                                                     {shortcut.runCount > 0 && (
                                                         <p className="text-xs text-slate-500 pl-1">
                                                             Run {shortcut.runCount}x {shortcut.lastRun && ` ${new Date(shortcut.lastRun).toLocaleDateString()}`}
