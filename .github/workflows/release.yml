@@ -61,10 +61,11 @@ jobs:
       - name: Build
         run: wails build -clean
 
-      - name: Rename macOS binary
+      - name: Package macOS binary
         run: |
           mkdir -p build/bin/renamed
-          mv build/bin/YaGUI.app build/bin/renamed/YaGUI-macos-amd64.app
+          cd build/bin
+          zip -r renamed/YaGUI-macos-amd64.zip YaGUI.app
 
       - uses: actions/upload-artifact@v4
         with:
