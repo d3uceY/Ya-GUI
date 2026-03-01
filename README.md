@@ -93,16 +93,25 @@ For example:
 2. Tag pills appear below the search bar once any shortcut has tags
 3. Click a tag pill to filter the list to only shortcuts with that tag; click **All** to reset
 
+4. <img width="585" height="167" alt="image" src="https://github.com/user-attachments/assets/c168deca-065d-467d-9882-1172e9372405" />
+
+
 ### Pinning a Shortcut
 
 - Click the **Star** icon on any row to pin that shortcut to the top of the list
 - A filled yellow star and a subtle highlight indicate a pinned shortcut
 - Click the star again to unpin
 
+- <img width="566" height="263" alt="image" src="https://github.com/user-attachments/assets/5ad8e1b6-679a-4fdc-a2fc-c3c381e8e61e" />
+
+
 ### Duplicating a Shortcut
 
 - Click the **Copy** icon on any row to create an exact copy of that shortcut
 - The copy is named `<name> (copy)` and appears in the list immediately, ready to edit
+
+- <img width="557" height="113" alt="image" src="https://github.com/user-attachments/assets/550079aa-d91f-4d56-af22-8357d66c7de9" />
+
 
 ### Running a Shortcut with Variable Substitution
 
@@ -111,6 +120,11 @@ You can embed placeholders in a command using curly braces, e.g. `git checkout {
 1. Click the **Run** (terminal) icon next to a shortcut that has `{placeholders}`
 2. A dialog appears asking you to fill in each variable
 3. Once all fields are filled, click **Continue** to proceed to directory selection
+
+4. <img width="555" height="110" alt="image" src="https://github.com/user-attachments/assets/61880322-61d9-4e28-82ce-5f5735a079cf" />
+   <img width="460" height="268" alt="image" src="https://github.com/user-attachments/assets/b15a4ef6-d794-4a8b-9e14-51ceaf7a9890" />
+
+
 
 ### Running a Shortcut in a Terminal
 
@@ -131,6 +145,9 @@ Save directories you use often so they appear as one-click options in the run di
 3. Click **Add Directory**
 4. The directory now appears as a quick-pick button every time you run a shortcut
 
+5. <img width="583" height="314" alt="image" src="https://github.com/user-attachments/assets/feeee2e9-a587-4a82-8b6e-a468b0719705" />
+
+
 To remove a saved directory, click the **Trash** icon next to it.
 
 
@@ -141,6 +158,9 @@ Every shortcut execution is recorded automatically.
 1. Click **Run History** in the sidebar to view the log
 2. Each entry shows the shortcut name, command, directory, and timestamp
 3. Click **Clear All** to wipe the history if needed
+
+4. <img width="575" height="214" alt="image" src="https://github.com/user-attachments/assets/e5eb37bc-eb70-438c-8c3a-26e4dccc4af3" />
+
 
 
 ### Searching Shortcuts
@@ -167,11 +187,17 @@ Every shortcut execution is recorded automatically.
 2. Choose from **Auto-detect**, **Windows Terminal (wt)**, **PowerShell**, **Command Prompt**, or **Bash**
 3. Your choice is saved and used for every subsequent shortcut run
 
+4. <img width="626" height="386" alt="image" src="https://github.com/user-attachments/assets/84ebdd24-5cc9-4ba4-b982-e73de7c1c825" />
+
+
 
 ### Start on Boot
 
 1. Go to **Settings → Start on Boot**
 2. Toggle the switch to have Ya-GUI launch automatically when you log into your computer
+
+3. <img width="579" height="199" alt="image" src="https://github.com/user-attachments/assets/5e670dbc-4814-4f7e-a982-2aa0504f377a" />
+
 
 
 ### Deleting a Shortcut
