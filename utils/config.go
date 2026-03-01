@@ -7,7 +7,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	goRuntime "runtime"
-	"syscall"
 )
 
 func configFilePath() (string, error) {
@@ -155,9 +154,7 @@ func GetStartOnBoot() bool {
 		cmd := exec.Command("reg", "query",
 			`HKCU\Software\Microsoft\Windows\CurrentVersion\Run`,
 			"/v", "YaGUI")
-		cmd.SysProcAttr = &syscall.SysProcAttr{
-			HideWindow: true,
-		}
+		hideWindowForCmd(cmd)
 		return cmd.Run() == nil
 	case "darwin":
 		home, err := os.UserHomeDir()
