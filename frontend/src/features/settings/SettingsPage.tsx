@@ -234,7 +234,7 @@ export default function SettingsPage() {
                             <div className="flex items-start justify-between mb-3">
                                 <div>
                                     <span className="text-base font-bold text-blue-100 block">Update Available!</span>
-                                    <Badge className="mt-1 bg-blue-600 text-white text-xs">v{updateAvailable.version}</Badge>
+                                    <Badge className="mt-1 bg-blue-600 text-white text-xs">{updateAvailable.version}</Badge>
                                 </div>
                             </div>
                             <div className="space-y-2 mb-4">
