@@ -3,120 +3,220 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
+  validate-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      is_stable: ${{ steps.check.outputs.is_stable }}
+    steps:
+      - name: Validate stable release tag
+        id: check
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "is_stable=true" >> "$GITHUB_OUTPUT"
+            echo "Stable release tag detected: $TAG"
+          else
+            echo "is_stable=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping release workflow for pre-release/non-stable tag: $TAG"
+          fi
 
   build-linux-amd64:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
+    needs: validate-tag
+    if: needs.validate-tag.outputs.is_stable == 'true'
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.23'
+          go-version: "1.23"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install Linux dependencies
         run: |
           sudo apt update
-          sudo apt install -y build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.0-dev
+          sudo apt install -y build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.1-dev
+
+      - name: Create webkit2gtk-4.0 pkg-config compatibility shim
+        run: |
+          sudo mkdir -p /usr/local/lib/pkgconfig
+          printf 'Name: webkit2gtk-4.0\nDescription: WebKit2 GTK+ (compat shim for 4.1)\nVersion: 2.44.0\nRequires: webkit2gtk-4.1\nCflags:\nLibs:\n' \
+            | sudo tee /usr/local/lib/pkgconfig/webkit2gtk-4.0.pc
+          echo "PKG_CONFIG_PATH=/usr/local/lib/pkgconfig" >> "$GITHUB_ENV"
 
       - name: Install Wails
-        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.11.0
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0
 
       - name: Install frontend dependencies
         run: npm install
         working-directory: frontend
 
       - name: Build
-        run: wails build -clean
+        run: wails build -clean -tags webkit2gtk_4_1 -o YaGUI-linux-amd64
 
       - name: Rename Linux binary
         run: |
+          BIN_PATH="build/bin/YaGUI-linux-amd64"
+          if [ ! -f "$BIN_PATH" ]; then
+            echo "Linux binary not found at $BIN_PATH"
+            exit 1
+          fi
           mkdir -p build/bin/renamed
-          mv build/bin/YaGUI build/bin/renamed/YaGUI-linux-amd64
+          mv "$BIN_PATH" build/bin/renamed/YaGUI-linux-amd64
 
       - uses: actions/upload-artifact@v4
         with:
           name: binaries-linux-amd64
           path: build/bin/renamed/*
 
-
   build-macos:
     runs-on: macos-latest
+    needs: validate-tag
+    if: needs.validate-tag.outputs.is_stable == 'true'
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.23'
+          go-version: "1.23"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install Wails
-        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.11.0
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0
 
       - name: Install frontend dependencies
         run: npm install
         working-directory: frontend
 
-      - name: Build
-        run: wails build -clean
+      - name: Build macOS ARM64
+        run: wails build -clean -platform darwin/arm64 -o YaGUI-macos-arm64
 
-      - name: Package macOS binary
+      - name: Package ARM64 DMG
         run: |
-          mkdir -p build/bin/renamed
-          cd build/bin
-          zip -r renamed/YaGUI-macos-amd64.zip YaGUI.app
+          mkdir -p artifacts
+          APP_NAME=$(node -p "const fs=require('fs');const cfg=JSON.parse(fs.readFileSync('wails.json','utf8'));cfg.outputfilename || cfg.name")
+          APP_PATH="build/bin/${APP_NAME}.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "No .app produced by ARM64 build at $APP_PATH"
+            exit 1
+          fi
+          hdiutil create \
+            -volname "YaGUI" \
+            -srcfolder "$APP_PATH" \
+            -ov -format UDZO \
+            artifacts/YaGUI-macos-arm64.dmg
+
+      - name: Build macOS AMD64
+        run: wails build -clean -platform darwin/amd64 -o YaGUI-macos-amd64
+
+      - name: Package AMD64 DMG
+        run: |
+          APP_NAME=$(node -p "const fs=require('fs');const cfg=JSON.parse(fs.readFileSync('wails.json','utf8'));cfg.outputfilename || cfg.name")
+          APP_PATH="build/bin/${APP_NAME}.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "No .app produced by AMD64 build at $APP_PATH"
+            exit 1
+          fi
+          hdiutil create \
+            -volname "YaGUI" \
+            -srcfolder "$APP_PATH" \
+            -ov -format UDZO \
+            artifacts/YaGUI-macos-amd64.dmg
 
       - uses: actions/upload-artifact@v4
         with:
           name: binaries-macos
-          path: build/bin/renamed/*
-
+          path: artifacts/*.dmg
 
   build-windows-amd64:
     runs-on: windows-latest
+    needs: validate-tag
+    if: needs.validate-tag.outputs.is_stable == 'true'
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.23'
+          go-version: "1.23"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install NSIS
         run: choco install nsis -y
 
+      - name: Add NSIS to PATH
+        shell: pwsh
+        run: |
+          $candidates = @(
+            "$env:ChocolateyInstall\bin",
+            "${env:ProgramFiles(x86)}\NSIS",
+            "$env:ProgramFiles\NSIS"
+          )
+          foreach ($candidate in $candidates) {
+            if (Test-Path $candidate) {
+              Add-Content -Path $env:GITHUB_PATH -Value $candidate
+              $env:PATH = "$candidate;$env:PATH"
+            }
+          }
+          $makensis = Get-Command makensis -ErrorAction SilentlyContinue
+          if (-not $makensis) {
+            throw "makensis not found after NSIS installation"
+          }
+          Write-Host "Using makensis at $($makensis.Source)"
+
       - name: Install Wails
-        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.11.0
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0
 
       - name: Install frontend dependencies
         run: npm install
         working-directory: frontend
 
       - name: Build
-        run: wails build -clean -nsis
+        run: wails build -clean -nsis -o YaGUI-windows-amd64
 
       - name: Rename Windows outputs
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path build\bin\renamed
-          Move-Item build\bin\YaGUI.exe build\bin\renamed\YaGUI-windows-amd64.exe
-          $installer = Get-ChildItem build\bin\*installer.exe -ErrorAction SilentlyContinue
-          if ($installer) {
-            Move-Item $installer.FullName build\bin\renamed\YaGUI-windows-installer.exe
+          if (Test-Path build\bin\YaGUI-windows-amd64.exe) {
+            Move-Item build\bin\YaGUI-windows-amd64.exe build\bin\renamed\YaGUI-windows-amd64.exe
           }
+          $installer = Get-ChildItem build\bin\*installer.exe -ErrorAction SilentlyContinue | Where-Object { $_.Name -like '*YaGUI-windows-amd64*' -or $_.Name -like '*installer*' } | Select-Object -First 1
+          if (-not $installer) {
+            throw "Windows installer not found in build/bin"
+          }
+          Move-Item $installer.FullName build\bin\renamed\YaGUI-windows-amd64-installer.exe
 
       - uses: actions/upload-artifact@v4
         with:
           name: binaries-windows-amd64
           path: build/bin/renamed/*
 
-
   release:
     runs-on: ubuntu-latest
     needs:
+      - validate-tag
       - build-linux-amd64
       - build-macos
       - build-windows-amd64
+    if: needs.validate-tag.outputs.is_stable == 'true'
     permissions:
       contents: write
     steps:
@@ -125,24 +225,64 @@ jobs:
           fetch-depth: 0
 
       - name: Generate commit log
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           CURR_TAG="${GITHUB_REF#refs/tags/}"
           PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v' | sed -n '2p')
-          echo "## Commits" > commit_log.md
-          echo "" >> commit_log.md
+
           if [ -n "$PREV_TAG" ]; then
-            echo "Changes since \`${PREV_TAG}\`:" >> commit_log.md
-            echo "" >> commit_log.md
-            git log "${PREV_TAG}..${CURR_TAG}" --pretty=format:"- %s (%h)" --no-merges >> commit_log.md
+            RANGE="${PREV_TAG}..${CURR_TAG}"
           else
-            git log "${CURR_TAG}" --pretty=format:"- %s (%h)" --no-merges >> commit_log.md
+            RANGE="${CURR_TAG}"
           fi
-          echo "" >> commit_log.md
+
+          USERS_FILE=$(mktemp)
+
+          while IFS= read -r HASH; do
+            [ -z "$HASH" ] && continue
+            GH_LOGIN=$(curl -sf \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${{ github.repository }}/commits/${HASH}" \
+              | jq -r '.author.login // empty' 2>/dev/null || echo "")
+            if [ -n "$GH_LOGIN" ]; then
+              echo "$GH_LOGIN" >> "$USERS_FILE"
+            fi
+          done < <(git log "$RANGE" --pretty=format:"%H" --no-merges)
+
+          > commit_log.md
+
+          if [ -s "$USERS_FILE" ]; then
+            echo "### Contributors" >> commit_log.md
+            echo "" >> commit_log.md
+            echo "<table><tr>" >> commit_log.md
+            for USER in $(sort -u "$USERS_FILE"); do
+              printf '  <td align="center"><a href="https://github.com/%s"><img src="https://github.com/%s.png?size=72" width="72" height="72" style="border-radius:50%%" /><br /><b>@%s</b></a></td>\n' \
+                "$USER" "$USER" "$USER" >> commit_log.md
+            done
+            echo "</tr></table>" >> commit_log.md
+            echo "" >> commit_log.md
+          fi
+
+          rm -f "$USERS_FILE"
 
       - uses: actions/download-artifact@v4
         with:
           path: binaries
           merge-multiple: true
+
+      - name: Verify release artifacts
+        run: |
+          test -f binaries/YaGUI-linux-amd64
+          test -f binaries/YaGUI-macos-arm64.dmg
+          test -f binaries/YaGUI-macos-amd64.dmg
+          test -f binaries/YaGUI-windows-amd64-installer.exe
+
+      - name: Generate checksums
+        run: |
+          cd binaries
+          sha256sum YaGUI-* > SHA256SUMS.txt
 
       - uses: softprops/action-gh-release@v2
         with:
