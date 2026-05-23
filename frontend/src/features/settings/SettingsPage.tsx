@@ -234,7 +234,7 @@ export default function SettingsPage() {
                             <div className="flex items-start justify-between mb-3">
                                 <div>
                                     <span className="text-base font-bold text-blue-100 block">Update Available!</span>
-                                    <Badge className="mt-1 bg-blue-600 text-white text-xs">v{updateAvailable.version}</Badge>
+                                    <Badge className="mt-1 bg-blue-600 text-white text-xs">{updateAvailable.version}</Badge>
                                 </div>
                             </div>
                             <div className="space-y-2 mb-4">
@@ -255,7 +255,7 @@ export default function SettingsPage() {
                         <a href="https://github.com/d3uceY/Ya-GUI" target="_blank" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold hover:underline">
                             Visit Website <ExternalLink className="w-4 h-4" />
                         </a>
-                        <a href="https://github.com/d3uceY/Ya-CLI/releases/tag/v0.3.1" target="_blank" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold hover:underline">
+                        <a href="https://github.com/d3uceY/Ya-CLI/releases/latest" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold hover:underline">
                             Download CLI <Download className="w-4 h-4" />
                         </a>
                     </div>

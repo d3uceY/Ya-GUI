@@ -11,7 +11,7 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-var AppVersion = "v0.3.1"
+var AppVersion = "v0.3.2"
 
 func main() {
 	// Create an instance of the app structure
@@ -21,12 +21,13 @@ func main() {
 	err := wails.Run(&options.App{
 		Title:     "YaGUI",
 		Width:     850,
-		Height:    600,
+		Height:    700,
 		MinHeight: 400,
 		MinWidth:  850,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
+		WindowStartState: options.Maximised,
 		BackgroundColour: &options.RGBA{R: 220, G: 230, B: 241, A: 255},
 		OnStartup:        app.startup,
 		Bind: []interface{}{
