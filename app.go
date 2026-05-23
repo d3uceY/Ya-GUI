@@ -37,9 +37,10 @@ func (a *App) AddShortcut(name, command, description, tags string) (map[string]u
 	return utils.GetShortcuts()
 }
 
-// UpdateShortcut edits an existing shortcut's metadata.
-func (a *App) UpdateShortcut(name, command, description, tags string) error {
-	return utils.UpdateShortcut(name, command, description, tags)
+// UpdateShortcut edits an existing shortcut. If newName differs from oldName
+// the shortcut is renamed atomically.
+func (a *App) UpdateShortcut(oldName, newName, command, description, tags string) error {
+	return utils.UpdateShortcut(oldName, newName, command, description, tags)
 }
 
 func (a *App) RemoveShortcut(name string) error {

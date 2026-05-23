@@ -14,11 +14,12 @@ import type { Shortcut } from "@/types"
 interface Props {
     shortcut: Shortcut | null
     open: boolean
-    onSave: (name: string, command: string, description: string, tags: string) => Promise<void>
+    onSave: (oldName: string, newName: string, command: string, description: string, tags: string) => Promise<void>
     onClose: () => void
 }
 
 export default function EditShortcutDialog({ shortcut, open, onSave, onClose }: Props) {
+    const [name, setName] = useState("")
     const [command, setCommand] = useState("")
     const [description, setDescription] = useState("")
     const [tags, setTags] = useState("")
@@ -26,6 +27,7 @@ export default function EditShortcutDialog({ shortcut, open, onSave, onClose }: 
 
     useEffect(() => {
         if (shortcut) {
+            setName(shortcut.name)
             setCommand(shortcut.command)
             setDescription(shortcut.description)
             setTags(shortcut.tags.join(", "))
@@ -33,10 +35,10 @@ export default function EditShortcutDialog({ shortcut, open, onSave, onClose }: 
     }, [shortcut])
 
     const handleSave = async () => {
-        if (!shortcut || !command.trim()) return
+        if (!shortcut || !name.trim() || !command.trim()) return
         setSaving(true)
         try {
-            await onSave(shortcut.name, command.trim(), description.trim(), tags.trim())
+            await onSave(shortcut.name, name.trim(), command.trim(), description.trim(), tags.trim())
             onClose()
         } finally {
             setSaving(false)
@@ -62,13 +64,22 @@ export default function EditShortcutDialog({ shortcut, open, onSave, onClose }: 
 
                 <div className="space-y-4 mt-2">
                     <div>
+                        <label className="block text-sm font-bold text-blue-200 mb-1.5">Name</label>
+                        <Input
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="e.g., gp, dev"
+                            className="border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500"
+                            autoFocus
+                        />
+                    </div>
+                    <div>
                         <label className="block text-sm font-bold text-blue-200 mb-1.5">Command</label>
                         <Input
                             value={command}
                             onChange={(e) => setCommand(e.target.value)}
                             placeholder="e.g., git push origin main"
                             className="border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500"
-                            autoFocus
                             onKeyDown={(e) => e.key === "Enter" && handleSave()}
                         />
                     </div>
@@ -107,7 +118,7 @@ export default function EditShortcutDialog({ shortcut, open, onSave, onClose }: 
                     <AlertDialogAction
                         className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
                         onClick={handleSave}
-                        disabled={!command.trim() || saving}
+                        disabled={!name.trim() || !command.trim() || saving}
                     >
                         {saving ? "Saving…" : "Save"}
                     </AlertDialogAction>
