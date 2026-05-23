@@ -8,7 +8,7 @@ import {
     extractVariables,
     substituteVariables,
 } from "@/lib/shortcutHelpers"
-import { Edit2, Trash2, Search, TerminalSquare, Star, Copy, Tag } from "lucide-react"
+import { Edit2, Trash2, Search, TerminalSquare, Star, Copy, Tag, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -34,6 +34,7 @@ import { Badge } from "@/components/ui/badge"
 import VarSubstitutionDialog from "@/components/VarSubstitutionDialog"
 import DirectoryPickerDialog from "@/components/DirectoryPickerDialog"
 import EditShortcutDialog from "@/components/EditShortcutDialog"
+import AddShortcutDialog from "@/components/AddShortcutDialog"
 import { useAppConfig } from "@/contexts/VersionContext"
 import type { Shortcut, ShortcutData } from "@/types"
 
@@ -67,11 +68,7 @@ export default function ShortcutsPage() {
     const [searchQuery, setSearchQuery] = useState("")
     const [activeTag, setActiveTag] = useState<string | null>(null)
 
-    const [shortcutName, setShortcutName] = useState("")
-    const [commandLine, setCommandLine] = useState("")
-    const [description, setDescription] = useState("")
-    const [tags, setTags] = useState("")
-
+    const [addDialogOpen, setAddDialogOpen] = useState(false)
     const [editDialog, setEditDialog] = useState<{ open: boolean; shortcut: Shortcut | null }>({ open: false, shortcut: null })
 
     const [varDialog, setVarDialog] = useState<VarDialogState>({
@@ -93,15 +90,9 @@ export default function ShortcutsPage() {
         }
     }
 
-    const handleAddShortcut = async () => {
-        if (!shortcutName.trim() || !commandLine.trim()) return
-        try {
-            const updated = await AddShortcut(shortcutName, commandLine, description, tags)
-            setShortcuts(updated)
-            setShortcutName(""); setCommandLine(""); setDescription(""); setTags("")
-        } catch (err) {
-            console.error("Error adding shortcut:", err)
-        }
+    const handleAddShortcut = async (name: string, command: string, description: string, tags: string) => {
+        const updated = await AddShortcut(name, command, description, tags)
+        setShortcuts(updated)
     }
 
     const handleSaveEdit = async (oldName: string, newName: string, command: string, description: string, tags: string) => {
@@ -168,6 +159,11 @@ export default function ShortcutsPage() {
 
     return (
         <div className="flex flex-col h-full p-8 pt-4 max-w-6xl mx-auto">
+            <AddShortcutDialog
+                open={addDialogOpen}
+                onAdd={handleAddShortcut}
+                onClose={() => setAddDialogOpen(false)}
+            />
             <EditShortcutDialog
                 open={editDialog.open}
                 shortcut={editDialog.shortcut}
@@ -191,7 +187,16 @@ export default function ShortcutsPage() {
 
             <Card className="mb-8 pt-0 overflow-y-hidden flex flex-col border-2 bg-slate-800/50 border-slate-700">
                 <CardHeader className="border-b pt-6 border-slate-700 bg-slate-900/50">
-                    <CardTitle className="text-xl text-blue-100">Your Shortcuts</CardTitle>
+                    <div className="flex items-center justify-between">
+                        <CardTitle className="text-xl text-blue-100">Your Shortcuts</CardTitle>
+                        <Button
+                            onClick={() => setAddDialogOpen(true)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white border-2 border-blue-500 hover:border-blue-400 h-9 px-3 gap-1.5 text-sm font-bold"
+                        >
+                            <Plus className="w-4 h-4" />
+                            New Shortcut
+                        </Button>
+                    </div>
                     <div className="mt-4">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -259,7 +264,7 @@ export default function ShortcutsPage() {
                                                     </code>
                                                     {shortcut.description && <p className="text-xs text-slate-400 pl-1 mt-3">{shortcut.description}</p>}
                                                     {shortcut.runCount > 0 && (
-                                                        <p className="text-xs text-slate-500 pl-1">
+                                                        <p className="text-xs text-slate-500 pl-1 mt-3">
                                                             Run {shortcut.runCount}x {shortcut.lastRun && ` ${new Date(shortcut.lastRun).toLocaleDateString()}`}
                                                         </p>
                                                     )}
@@ -293,7 +298,7 @@ export default function ShortcutsPage() {
                                     )
                                 })}
                                 {filtered.length === 0 && (
-                                    <TableRow><TableCell colSpan={3} className="text-center py-12 text-slate-500">{searchQuery || activeTag ? "No shortcuts match your search." : "No shortcuts yet. Add one below."}</TableCell></TableRow>
+                                    <TableRow><TableCell colSpan={3} className="text-center py-12 text-slate-500">{searchQuery || activeTag ? "No shortcuts match your search." : "No shortcuts yet. Click \"New Shortcut\" to add one."}</TableCell></TableRow>
                                 )}
                             </TableBody>
                         </Table>
@@ -301,34 +306,6 @@ export default function ShortcutsPage() {
                 </CardContent>
             </Card>
 
-            <Card className="border-2 bg-slate-800/50 pt-0 overflow-hidden border-slate-700">
-                <CardHeader className="border-b pt-6 border-slate-700 bg-slate-900/50">
-                    <CardTitle className="text-xl text-blue-100">Add New Shortcut</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4 pt-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-bold text-blue-200 mb-2">Shortcut Name</label>
-                            <Input placeholder="e.g., gp, dev" value={shortcutName} onChange={(e) => setShortcutName(e.target.value)} className="w-full border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500 h-11" />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold text-blue-200 mb-2">Command</label>
-                            <Input placeholder="e.g., git push, git checkout {branch}" value={commandLine} onChange={(e) => setCommandLine(e.target.value)} className="w-full border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500 h-11" />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold text-blue-200 mb-2">Description <span className="font-normal text-slate-400">(optional)</span></label>
-                            <Input placeholder="What does this shortcut do?" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500 h-11" />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold text-blue-200 mb-2">Tags <span className="font-normal text-slate-400">(comma-separated)</span></label>
-                            <Input placeholder="e.g., git, npm, docker" value={tags} onChange={(e) => setTags(e.target.value)} className="w-full border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500 h-11" />
-                        </div>
-                    </div>
-                    <Button onClick={handleAddShortcut} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-bold shadow-lg shadow-blue-900/50 border-2 border-blue-500 hover:border-blue-400 disabled:opacity-50 disabled:cursor-not-allowed" disabled={!shortcutName.trim() || !commandLine.trim()}>
-                        Add Shortcut
-                    </Button>
-                </CardContent>
-            </Card>
         </div>
     )
 }
