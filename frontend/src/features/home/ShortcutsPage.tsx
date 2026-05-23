@@ -104,8 +104,8 @@ export default function ShortcutsPage() {
         }
     }
 
-    const handleSaveEdit = async (name: string, command: string, description: string, tags: string) => {
-        await UpdateShortcut(name, command, description, tags)
+    const handleSaveEdit = async (oldName: string, newName: string, command: string, description: string, tags: string) => {
+        await UpdateShortcut(oldName, newName, command, description, tags)
         await loadShortcuts()
     }
 

@@ -40,4 +40,4 @@ export function SetStartOnBoot(arg1:boolean):Promise<void>;
 
 export function TogglePinShortcut(arg1:string):Promise<void>;
 
-export function UpdateShortcut(arg1:string,arg2:string,arg3:string,arg4:string):Promise<void>;
+export function UpdateShortcut(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string):Promise<void>;

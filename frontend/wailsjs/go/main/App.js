@@ -78,6 +78,6 @@ export function TogglePinShortcut(arg1) {
   return window['go']['main']['App']['TogglePinShortcut'](arg1);
 }
 
-export function UpdateShortcut(arg1, arg2, arg3, arg4) {
-  return window['go']['main']['App']['UpdateShortcut'](arg1, arg2, arg3, arg4);
+export function UpdateShortcut(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['main']['App']['UpdateShortcut'](arg1, arg2, arg3, arg4, arg5);
 }

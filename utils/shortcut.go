@@ -211,9 +211,36 @@ func AddShortcut(name, command, description, tags string) error {
 	return saveShortcuts(shortcuts)
 }
 
-// UpdateShortcut edits an existing shortcut.
-func UpdateShortcut(name, command, description, tags string) error {
-	return AddShortcut(name, command, description, tags)
+// UpdateShortcut edits an existing shortcut. If newName differs from oldName
+// the shortcut is renamed atomically, preserving Pinned, RunCount and LastRun.
+func UpdateShortcut(oldName, newName, command, description, tags string) error {
+	newName = strings.TrimSpace(newName)
+	if newName == "" {
+		return fmt.Errorf("shortcut name cannot be empty")
+	}
+	shortcuts, err := loadShortcuts()
+	if err != nil {
+		return err
+	}
+	src, ok := shortcuts[oldName]
+	if !ok {
+		return fmt.Errorf("shortcut %q not found", oldName)
+	}
+	if oldName != newName {
+		if _, exists := shortcuts[newName]; exists {
+			return fmt.Errorf("a shortcut named %q already exists", newName)
+		}
+		delete(shortcuts, oldName)
+	}
+	shortcuts[newName] = ShortcutData{
+		Command:     command,
+		Description: description,
+		Tags:        parseTags(tags),
+		Pinned:      src.Pinned,
+		RunCount:    src.RunCount,
+		LastRun:     src.LastRun,
+	}
+	return saveShortcuts(shortcuts)
 }
 
 // RemoveShortcut deletes a shortcut and its metadata by name.
