@@ -228,7 +228,7 @@ export default function ShortcutsPage() {
                 </CardHeader>
 
                 <CardContent className="p-0">
-                    <ScrollArea className="h-100">
+                    <ScrollArea className="h-64 md:h-80 lg:h-96 xl:h-120 2xl:h-150">
                         <Table>
                             <TableHeader>
                                 <TableRow className="border-b-2 border-slate-700 hover:bg-transparent">
