@@ -9,7 +9,8 @@ A modern desktop application for managing command-line shortcuts and aliases for
 
 Ya-GUI is a sleek, user-friendly graphical interface built with Wails (Go + React + TypeScript) that helps you manage your command-line shortcuts efficiently. No more memorizing complex commands or editing configuration files manually - Ya-GUI provides an intuitive way to create, edit, and organize your CLI aliases.
 
-<img  alt="image" src="https://github.com/user-attachments/assets/258c0012-6944-43e7-95ee-a5f147ceca2b" width="100%"/>
+<img width="811" height="553" alt="image" src="https://github.com/user-attachments/assets/c98e6d2f-10f9-4e98-90ab-79288a9702d6" />
+
 
 [![Latest Release](https://img.shields.io/github/v/release/d3uceY/Ya-GUI?style=for-the-badge)](https://github.com/d3uceY/Ya-GUI/releases/latest)
 [![macOS](https://img.shields.io/badge/macOS-Supported-blue?style=for-the-badge&logo=apple)](https://github.com/d3uceY/Ya-GUI/releases/latest)
