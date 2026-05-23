@@ -25,9 +25,15 @@ Get the latest release here:
 
 You can download prebuilt binaries for:
 
-- **macOS**
-- **Windows**
-- **Linux** (Ubuntu 22.04+ compatible)
+| Platform | File | Notes |
+|---|---|---|
+| **macOS (Apple Silicon)** | `YaGUI-macos-arm64.dmg` | DMG installer for M1/M2/M3+ |
+| **macOS (Intel)** | `YaGUI-macos-amd64.dmg` | DMG installer for Intel Macs |
+| **Windows** | `YaGUI-windows-amd64-installer.exe` | NSIS installer (recommended) |
+| **Windows** | `YaGUI-windows-amd64.exe` | Portable executable |
+| **Linux** | `YaGUI-linux-amd64` | Binary for Ubuntu 24.04+ / amd64 |
+
+A `SHA256SUMS.txt` file is included in each release to verify download integrity.
 
 Visit the link above to grab the latest version for your platform.
 
