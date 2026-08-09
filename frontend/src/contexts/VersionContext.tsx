@@ -21,14 +21,15 @@ interface AppConfigContextType {
 }
 
 const VersionContext = createContext<VersionContextType | undefined>(undefined);
-const CliContext = createContext<boolean | undefined>(undefined);
+const CliContext = createContext<boolean | null | undefined>(undefined);
 const AppConfigContext = createContext<AppConfigContextType | undefined>(undefined);
 
 export const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentVersion, setCurrentVersion] = useState<string>("");
   const [updateAvailable, setUpdateAvailable] = useState<UpdateInfo | null>(null);
   const [isChecking, setIsChecking] = useState<boolean>(false);
-  const [cliExists, setCliExists] = useState<boolean>(false);
+  // null = not yet checked, so the CLI dialog never flashes open on launch.
+  const [cliExists, setCliExists] = useState<boolean | null>(null);
   const [config, setConfig] = useState<AppConfig>({ preferredTerminal: "auto" });
 
   const refreshConfig = useCallback(async () => {

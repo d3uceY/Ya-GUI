@@ -21,7 +21,7 @@ export default function VarSubstitutionDialog({ open, variables, values, onChang
     const allFilled = variables.every((v) => (values[v] ?? "").trim() !== "")
 
     return (
-        <AlertDialog open={open}>
+        <AlertDialog open={open} onOpenChange={(o) => { if (!o) onCancel() }}>
             <AlertDialogContent className="max-w-md">
                 <AlertDialogTitle>Fill in Variables</AlertDialogTitle>
                 <AlertDialogDescription>

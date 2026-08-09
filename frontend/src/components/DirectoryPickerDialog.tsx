@@ -40,7 +40,7 @@ export default function DirectoryPickerDialog({ open, savedDirectories, onConfir
     }
 
     return (
-        <AlertDialog open={open}>
+        <AlertDialog open={open} onOpenChange={(o) => { if (!o) handleCancel() }}>
             <AlertDialogContent className="max-w-md">
                 <AlertDialogTitle>Choose a Directory</AlertDialogTitle>
                 <AlertDialogDescription>

@@ -295,7 +295,7 @@ export default function ShortcutsPage() {
                 {/* Results */}
                 <div className="min-h-0 flex-1 overflow-y-auto">
                     {filtered.length > 0 ? (
-                        <table className="w-full border-collapse text-sm">
+                        <table className="w-full table-fixed border-collapse text-sm">
                             <tbody>
                                 {filtered.map((shortcut, i) => (
                                     <tr
@@ -304,13 +304,14 @@ export default function ShortcutsPage() {
                                         data-selected={i === selectedIndex}
                                         onClick={() => startRun(shortcut)}
                                         className={cn(
-                                            "group relative cursor-pointer border-b border-edge transition-colors last:border-b-0",
+                                            "group relative flex flex-wrap items-start gap-x-3 gap-y-2.5 cursor-pointer border-b border-edge px-3 py-2.5 transition-colors last:border-b-0",
+                                            "sm:table-row sm:px-0 sm:py-0",
                                             "hover:bg-surface-2/70",
                                             shortcut.pinned && "bg-accent-tint/25",
                                             i === selectedIndex && "bg-[var(--row-selected)] hover:bg-[var(--row-selected)]",
                                         )}
                                     >
-                                        <td className="relative w-[200px] min-w-[150px] max-w-[240px] px-4 py-3 align-top">
+                                        <td className="relative max-w-[60%] flex-none px-3 py-1 align-top sm:table-cell sm:max-w-none sm:w-[170px] sm:px-4 sm:py-3 lg:w-[200px]">
                                             {i === selectedIndex && (
                                                 <span className="absolute top-0 left-0 h-full w-0.5 bg-accent" aria-hidden />
                                             )}
@@ -319,7 +320,7 @@ export default function ShortcutsPage() {
                                                 <span className="truncate">{shortcut.name}</span>
                                             </span>
                                         </td>
-                                        <td className="px-3 py-3 align-top">
+                                        <td className="w-full flex-none px-3 py-1 align-top sm:table-cell sm:min-w-0 sm:px-4 sm:py-3">
                                             <code
                                                 className="mono-cell block max-w-full truncate text-[13px] text-fg-muted transition-colors group-hover:text-fg"
                                                 title={shortcut.command}
@@ -343,7 +344,7 @@ export default function ShortcutsPage() {
                                                 </div>
                                             )}
                                         </td>
-                                        <td className="w-[230px] px-3 py-3 text-right align-top">
+                                        <td className="ml-auto flex-none px-3 py-1 text-right align-top sm:ml-0 sm:table-cell sm:w-[192px] sm:px-3 sm:py-3 lg:w-[230px]">
                                             <div className="flex items-center justify-end gap-0.5">
                                                 <Button
                                                     variant="success-ghost"

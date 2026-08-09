@@ -109,26 +109,26 @@ export default function RunHistoryPage() {
                             <p className="text-[12px] text-fg-faint">Run a shortcut to start tracking it here.</p>
                         </div>
                     ) : (
-                        <table className="w-full border-collapse text-sm">
+                        <table className="w-full table-fixed border-collapse text-sm">
                             <tbody>
                                 {history.map((entry, idx) => {
                                     const { date, time } = formatTimestamp(entry.timestamp)
                                     return (
                                         <tr
                                             key={idx}
-                                            className="border-b border-edge transition-colors last:border-b-0 hover:bg-surface-2/60"
+                                            className="flex flex-wrap items-start gap-x-3 gap-y-2 border-b border-edge px-3 py-2.5 transition-colors last:border-b-0 hover:bg-surface-2/60 sm:table-row sm:px-0 sm:py-0"
                                         >
-                                            <td className="w-28 min-w-[104px] px-4 py-3 align-top">
+                                            <td className="w-24 flex-none px-3 py-1 align-top sm:table-cell sm:w-28 sm:px-4 sm:py-3">
                                                 <span className="mono-cell block text-[11px] leading-4 text-fg-faint">{time}</span>
                                                 <span className="mono-cell block text-[11px] leading-4 text-fg-faint">{date}</span>
                                             </td>
-                                            <td className="w-44 min-w-[150px] max-w-[220px] px-3 py-3 align-top">
+                                            <td className="min-w-0 flex-1 px-3 py-1 align-top sm:table-cell sm:w-44 sm:flex-none sm:px-4 sm:py-3">
                                                 <span className="mono-cell inline-flex max-w-full items-center gap-1.5 rounded-md border border-edge-strong bg-surface-2 px-2 py-1 text-[12px] font-semibold text-fg-strong">
                                                     <Terminal className="h-3 w-3 shrink-0 text-accent-soft" />
                                                     <span className="truncate">{entry.shortcutName || "—"}</span>
                                                 </span>
                                             </td>
-                                            <td className="min-w-0 px-3 py-3 align-top">
+                                            <td className="w-full flex-none px-3 py-1 align-top sm:table-cell sm:min-w-0 sm:px-4 sm:py-3">
                                                 <code className="mono-cell block break-all text-[13px] text-fg-muted">
                                                     {entry.command}
                                                 </code>

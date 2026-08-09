@@ -25,7 +25,7 @@ export default function Layout() {
     }
   }
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-background text-fg">
+    <div className="flex h-dvh flex-col overflow-hidden bg-background text-fg">
       {/* THE COMMAND PALETTE — Ya-GUI.
           THESIS: Ya-GUI is a command palette, not a dashboard. Search is the front door; type to find any alias, Enter to run it. Refuses the card-grid dev-tool look.
           OWN-WORLD: slate ground, hairline borders, blue accent; Inter for UI, JetBrains Mono for commands/aliases/data; flat panels, a `❯` prompt on every search.
@@ -33,7 +33,7 @@ export default function Layout() {
           FIRST VIEWPORT: title bar (Ya mark + title + version) / left nav rail / palette search with ❯ + tag pills + command list filling the view / status bar with key hints (↑↓ · ↵ · esc).
           FORM: Command Palette — grounded candidate 5 of 7; seed key yagui-cli-command-manager.
           FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md */}
-      <CliNotFoundDialog open={!cliExists} />
+      <CliNotFoundDialog open={cliExists === false} />
 
       {/* Title bar */}
       <header className="flex h-12 shrink-0 items-center gap-2.5 border-b border-edge bg-surface px-4">
@@ -42,7 +42,7 @@ export default function Layout() {
         <span className="h-4 w-px bg-edge-strong" aria-hidden />
         <h1 className="truncate text-[13px] font-medium text-fg-muted">{getPageTitle()}</h1>
         <span className="mono-cell ml-auto hidden text-[11px] text-fg-faint sm:inline">
-          v{currentVersion || "—"}
+          {currentVersion || "—"}
         </span>
       </header>
 
@@ -56,12 +56,16 @@ export default function Layout() {
 
       {/* Status bar */}
       <footer className="flex h-7 shrink-0 items-center gap-4 border-t border-edge bg-surface px-4 text-[11px] text-fg-faint">
-        <span className={`flex items-center gap-1.5 ${cliExists ? "" : "text-warning"}`}>
+        <span className={`flex items-center gap-1.5 ${cliExists === false ? "text-warning" : ""}`}>
           <span
-            className={`h-1.5 w-1.5 shrink-0 rounded-full ${cliExists ? "bg-success" : "bg-warning"}`}
+            className={`h-1.5 w-1.5 shrink-0 rounded-full ${cliExists ? "bg-success" : cliExists === false ? "bg-warning" : "bg-edge-strong"}`}
             aria-hidden
           />
-          {cliExists ? "ya CLI connected" : "ya CLI not found"}
+          {cliExists === null
+            ? "Checking for ya CLI…"
+            : cliExists
+              ? "ya CLI connected"
+              : "ya CLI not found"}
         </span>
         <span className="ml-auto hidden items-center gap-4 sm:flex">
           <span className="flex items-center gap-1.5"><kbd className="kbd">↑↓</kbd> navigate</span>

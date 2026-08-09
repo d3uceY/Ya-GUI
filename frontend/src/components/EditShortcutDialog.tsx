@@ -48,7 +48,7 @@ export default function EditShortcutDialog({ shortcut, open, onSave, onClose }: 
     if (!shortcut) return null
 
     return (
-        <AlertDialog open={open}>
+        <AlertDialog open={open} onOpenChange={(o) => { if (!o) onClose() }}>
             <AlertDialogContent className="max-w-lg">
                 <AlertDialogTitle>Edit Shortcut</AlertDialogTitle>
                 <AlertDialogDescription asChild>

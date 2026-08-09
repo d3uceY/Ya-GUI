@@ -47,7 +47,7 @@ export default function AddShortcutDialog({ open, onAdd, onClose }: Props) {
     }
 
     return (
-        <AlertDialog open={open}>
+        <AlertDialog open={open} onOpenChange={(o) => { if (!o) handleClose() }}>
             <AlertDialogContent className="max-w-lg">
                 <AlertDialogTitle>Add New Shortcut</AlertDialogTitle>
                 <AlertDialogDescription>Create a new command-line shortcut.</AlertDialogDescription>
