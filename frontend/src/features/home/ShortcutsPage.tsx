@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react"
+﻿import { useState, useEffect, useRef, type KeyboardEvent } from "react"
 import { useCommandMaxLength } from "@/hooks/useCommandMaxLength"
 import {
     formatShortcuts,
@@ -8,18 +8,9 @@ import {
     extractVariables,
     substituteVariables,
 } from "@/lib/shortcutHelpers"
-import { Edit2, Trash2, Search, TerminalSquare, Star, Copy, Tag, Plus } from "lucide-react"
+import { Edit2, Trash2, Search, Terminal, Star, Copy, Tag, Plus, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -29,8 +20,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Badge } from "@/components/ui/badge"
 import VarSubstitutionDialog from "@/components/VarSubstitutionDialog"
 import DirectoryPickerDialog from "@/components/DirectoryPickerDialog"
 import EditShortcutDialog from "@/components/EditShortcutDialog"
@@ -47,6 +36,23 @@ import {
     DuplicateShortcut,
     ApplyShortcut,
 } from "../../../wailsjs/go/main/App"
+
+function TagPill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+    return (
+        <button
+            onClick={onClick}
+            className={cn(
+                "flex shrink-0 items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors",
+                active
+                    ? "border-accent-deep bg-accent-strong text-white"
+                    : "border-edge-strong bg-surface text-fg-faint hover:border-accent-deep/60 hover:text-fg-strong",
+            )}
+        >
+            {label !== "All" && <Tag className="h-3 w-3" />}
+            {label}
+        </button>
+    )
+}
 
 interface VarDialogState {
     open: boolean
@@ -80,7 +86,9 @@ export default function ShortcutsPage() {
 
     const commandMaxLength = useCommandMaxLength()
 
-    useEffect(() => { loadShortcuts() }, [])
+    const searchRef = useRef<HTMLInputElement>(null)
+    const rowRefs = useRef<(HTMLTableRowElement | null)[]>([])
+    const [selectedIndex, setSelectedIndex] = useState(0)
 
     const loadShortcuts = async () => {
         try {
@@ -88,6 +96,27 @@ export default function ShortcutsPage() {
         } catch (err) {
             console.error("Error loading shortcuts:", err)
         }
+    }
+
+    // Load shortcuts on mount; loadShortcuts is async, so the state update
+    // happens in the promise callback, not synchronously in the effect.
+    useEffect(() => {
+        GetShortcuts().then(setShortcuts).catch((err) => console.error("Error loading shortcuts:", err))
+    }, [])
+
+    // Keep the selected row in view as the user navigates with the arrows.
+    useEffect(() => {
+        rowRefs.current[selectedIndex]?.scrollIntoView({ block: "nearest" })
+    }, [selectedIndex])
+
+    // Palette helpers: every search/tag change resets keyboard selection to the top.
+    const setQuery = (q: string) => {
+        setSearchQuery(q)
+        setSelectedIndex(0)
+    }
+    const setTag = (t: string | null) => {
+        setActiveTag(t)
+        setSelectedIndex(0)
     }
 
     const handleAddShortcut = async (name: string, command: string, description: string, tags: string) => {
@@ -156,9 +185,37 @@ export default function ShortcutsPage() {
     const allShortcuts = formatShortcuts(shortcuts)
     const allTags = collectAllTags(allShortcuts)
     const filtered = filterShortcuts(allShortcuts, searchQuery, activeTag ?? undefined)
+    const pinnedCount = allShortcuts.filter((s) => s.pinned).length
+
+    const handlePaletteKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "ArrowDown") {
+            e.preventDefault()
+            if (filtered.length > 0) setSelectedIndex((i) => (i + 1) % filtered.length)
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault()
+            if (filtered.length > 0) setSelectedIndex((i) => (i - 1 + filtered.length) % filtered.length)
+        } else if (e.key === "Enter") {
+            e.preventDefault()
+            const target = filtered[selectedIndex] ?? filtered[0]
+            if (target) startRun(target)
+        } else if (e.key === "Escape") {
+            if (searchQuery || activeTag) {
+                setQuery("")
+                setTag(null)
+            } else {
+                e.currentTarget.blur()
+            }
+        }
+    }
+
+    const clearSearch = () => {
+        setQuery("")
+        setTag(null)
+        searchRef.current?.focus()
+    }
 
     return (
-        <div className="flex flex-col h-full p-8 pt-4 max-w-6xl mx-auto">
+        <div className="flex h-full flex-col p-4">
             <AddShortcutDialog
                 open={addDialogOpen}
                 onAdd={handleAddShortcut}
@@ -185,127 +242,195 @@ export default function ShortcutsPage() {
                 onCancel={() => setDirDialog({ open: false, shortcut: null, interpolatedCommand: "" })}
             />
 
-            <Card className="mb-8 pt-0 overflow-y-hidden flex flex-col border-2 bg-slate-800/50 border-slate-700">
-                <CardHeader className="border-b pt-6 border-slate-700 bg-slate-900/50">
-                    <div className="flex items-center justify-between">
-                        <CardTitle className="text-xl text-blue-100">Your Shortcuts</CardTitle>
-                        <Button
-                            onClick={() => setAddDialogOpen(true)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white border-2 border-blue-500 hover:border-blue-400 h-9 px-3 gap-1.5 text-sm font-bold"
+            <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-edge bg-surface shadow-[var(--shadow-panel)]">
+                {/* Palette input */}
+                <div className="flex shrink-0 items-center gap-2 border-b border-edge px-3 transition-colors focus-within:bg-surface-2/50">
+                    <span className="prompt text-[15px]" aria-hidden>❯</span>
+                    <input
+                        ref={searchRef}
+                        value={searchQuery}
+                        onChange={(e) => setQuery(e.target.value)}
+                        onKeyDown={handlePaletteKeyDown}
+                        placeholder="Search name, command, description, or tag…"
+                        autoFocus
+                        aria-label="Search shortcuts"
+                        className="h-12 w-full min-w-0 bg-transparent font-mono text-[14px] text-fg placeholder:text-fg-faint focus:outline-none"
+                    />
+                    {searchQuery && (
+                        <button
+                            onClick={clearSearch}
+                            aria-label="Clear search"
+                            className="rounded p-1 text-fg-faint transition-colors hover:bg-surface-3 hover:text-fg-strong"
                         >
-                            <Plus className="w-4 h-4" />
-                            New Shortcut
-                        </Button>
-                    </div>
-                    <div className="mt-4">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                            <Input
-                                placeholder="Search name, command, description or tag..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500 h-11"
-                            />
-                        </div>
-                    </div>
+                            <X className="h-4 w-4" />
+                        </button>
+                    )}
+                    <kbd className="kbd hidden sm:inline-flex">esc</kbd>
+                </div>
+
+                {/* Toolbar: count · tags · new */}
+                <div className="flex shrink-0 items-center gap-2 border-b border-edge bg-surface-2/40 px-3 py-2">
+                    <span className="mono-cell shrink-0 text-[11px] text-fg-faint">
+                        {filtered.length}/{allShortcuts.length} · {pinnedCount} pinned
+                    </span>
                     {allTags.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-3">
-                            <button
-                                onClick={() => setActiveTag(null)}
-                                className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border transition-colors ${activeTag === null ? "bg-blue-600 border-blue-400 text-white" : "border-slate-600 text-slate-400 hover:border-slate-400 hover:text-slate-200"}`}
-                            >All</button>
+                        <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto">
+                            <TagPill label="All" active={activeTag === null} onClick={() => setTag(null)} />
                             {allTags.map((tag) => (
-                                <button
+                                <TagPill
                                     key={tag}
-                                    onClick={() => setActiveTag(activeTag === tag ? null : tag)}
-                                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border transition-colors ${activeTag === tag ? "bg-blue-600 border-blue-400 text-white" : "border-slate-600 text-slate-400 hover:border-slate-400 hover:text-slate-200"}`}
-                                >
-                                    <Tag className="w-3 h-3" />{tag}
-                                </button>
+                                    label={tag}
+                                    active={activeTag === tag}
+                                    onClick={() => setTag(activeTag === tag ? null : tag)}
+                                />
                             ))}
                         </div>
                     )}
-                </CardHeader>
+                    <Button onClick={() => setAddDialogOpen(true)} size="sm" className="ml-auto shrink-0">
+                        <Plus className="h-4 w-4" />
+                        <span className="hidden sm:inline">New Shortcut</span>
+                    </Button>
+                </div>
 
-                <CardContent className="p-0">
-                    <ScrollArea className="h-64 md:h-80 lg:h-96 xl:h-120 2xl:h-150">
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="border-b-2 border-slate-700 hover:bg-transparent">
-                                    <TableHead className="w-44 font-bold text-blue-200 pl-8!">Shortcut</TableHead>
-                                    <TableHead className="font-bold text-blue-200">Command</TableHead>
-                                    <TableHead className="w-44 text-center font-bold text-blue-200">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {filtered.map((shortcut) => {
-                                    return (
-                                        <TableRow key={shortcut.name} className={`hover:bg-slate-900/50 border-b border-slate-700/50 ${shortcut.pinned ? "bg-blue-950/20" : ""}`}>
-                                            <TableCell className="py-3 align-top">
-                                                <div className="flex flex-col gap-1 pl-4">
-                                                    <Badge variant="secondary" className="font-bold text-sm px-3 py-1 bg-blue-900/50 text-blue-200 border border-blue-700 w-fit">
-                                                        {shortcut.pinned && <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400 inline" />}
-                                                        {shortcut.name}
-                                                    </Badge>
-                                                    {shortcut.tags.length > 0 && (
-                                                        <div className="flex flex-wrap gap-1">
-                                                            {shortcut.tags.map((t) => (
-                                                                <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">{t}</span>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </TableCell>
-
-                                            <TableCell className="py-3 align-top">
-                                                <div className="space-y-1">
-                                                    <code className="px-3 py-1.5 rounded bg-slate-900 text-blue-300 font-mono text-sm border border-slate-700" title={shortcut.command}>
-                                                        {truncateCommand(shortcut.command, commandMaxLength)}
-                                                    </code>
-                                                    {shortcut.description && <p className="text-xs text-slate-400 pl-1 mt-3">{shortcut.description}</p>}
+                {/* Results */}
+                <div className="min-h-0 flex-1 overflow-y-auto">
+                    {filtered.length > 0 ? (
+                        <table className="w-full border-collapse text-sm">
+                            <tbody>
+                                {filtered.map((shortcut, i) => (
+                                    <tr
+                                        key={shortcut.name}
+                                        ref={(el) => { rowRefs.current[i] = el }}
+                                        data-selected={i === selectedIndex}
+                                        onClick={() => startRun(shortcut)}
+                                        className={cn(
+                                            "group relative cursor-pointer border-b border-edge transition-colors last:border-b-0",
+                                            "hover:bg-surface-2/70",
+                                            shortcut.pinned && "bg-accent-tint/25",
+                                            i === selectedIndex && "bg-[var(--row-selected)] hover:bg-[var(--row-selected)]",
+                                        )}
+                                    >
+                                        <td className="relative w-[200px] min-w-[150px] max-w-[240px] px-4 py-3 align-top">
+                                            {i === selectedIndex && (
+                                                <span className="absolute top-0 left-0 h-full w-0.5 bg-accent" aria-hidden />
+                                            )}
+                                            <span className="mono-cell inline-flex max-w-full items-center gap-1.5 rounded-md border border-edge-strong bg-surface-2 px-2 py-1 text-[12px] font-semibold text-fg-strong">
+                                                {shortcut.pinned && <Star className="h-3 w-3 shrink-0 fill-pin text-pin" />}
+                                                <span className="truncate">{shortcut.name}</span>
+                                            </span>
+                                        </td>
+                                        <td className="px-3 py-3 align-top">
+                                            <code
+                                                className="mono-cell block max-w-full truncate text-[13px] text-fg-muted transition-colors group-hover:text-fg"
+                                                title={shortcut.command}
+                                            >
+                                                {truncateCommand(shortcut.command, commandMaxLength)}
+                                            </code>
+                                            {shortcut.description && (
+                                                <p className="mt-1.5 line-clamp-2 text-[12px] text-fg-faint">{shortcut.description}</p>
+                                            )}
+                                            {(shortcut.tags.length > 0 || shortcut.runCount > 0) && (
+                                                <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                                                    {shortcut.tags.slice(0, 3).map((t) => (
+                                                        <span key={t} className="rounded-full border border-edge bg-surface-2 px-1.5 py-px text-[10px] text-fg-faint">{t}</span>
+                                                    ))}
                                                     {shortcut.runCount > 0 && (
-                                                        <p className="text-xs text-slate-500 pl-1 mt-3">
-                                                            Run {shortcut.runCount}x {shortcut.lastRun && ` ${new Date(shortcut.lastRun).toLocaleDateString()}`}
-                                                        </p>
+                                                        <span className="mono-cell text-[10px] text-fg-faint">
+                                                            {shortcut.runCount} run{shortcut.runCount === 1 ? "" : "s"}
+                                                            {shortcut.lastRun ? ` · ${new Date(shortcut.lastRun).toLocaleDateString()}` : ""}
+                                                        </span>
                                                     )}
                                                 </div>
-                                            </TableCell>
-
-                                            <TableCell className="py-3 align-top">
-                                                <div className="flex gap-1 justify-end flex-wrap">
-                                                    <Button onClick={() => setEditDialog({ open: true, shortcut })} variant="ghost" size="icon" className="h-9 w-9 text-blue-400 hover:bg-blue-900/50 hover:text-blue-300" title="Edit"><Edit2 className="w-4 h-4" /></Button>
-                                                    <Button onClick={() => handleTogglePin(shortcut.name)} variant="ghost" size="icon" className={`h-9 w-9 hover:bg-yellow-900/30 ${shortcut.pinned ? "text-yellow-400" : "text-slate-500 hover:text-yellow-400"}`} title={shortcut.pinned ? "Unpin" : "Pin to top"}>
-                                                        <Star className={`w-4 h-4 ${shortcut.pinned ? "fill-yellow-400" : ""}`} />
-                                                    </Button>
-                                                    <Button onClick={() => handleDuplicate(shortcut.name)} variant="ghost" size="icon" className="h-9 w-9 text-slate-400 hover:bg-slate-700/50 hover:text-slate-200" title="Duplicate"><Copy className="w-4 h-4" /></Button>
-                                                    <Button onClick={() => startRun(shortcut)} variant="ghost" size="icon" className="h-9 w-9 text-green-400 hover:bg-green-900/50 hover:text-green-300" title="Run"><TerminalSquare className="w-4 h-4" /></Button>
-                                                    <AlertDialog>
-                                                        <AlertDialogTrigger asChild>
-                                                            <Button variant="ghost" size="icon" className="h-9 w-9 text-red-400 hover:bg-red-900/50 hover:text-red-300" title="Delete"><Trash2 className="w-4 h-4" /></Button>
-                                                        </AlertDialogTrigger>
-                                                        <AlertDialogContent className="border-2 bg-slate-800 border-slate-700">
-                                                            <AlertDialogTitle className="text-xl font-bold text-blue-100">Delete Shortcut</AlertDialogTitle>
-                                                            <AlertDialogDescription className="text-base text-slate-300">Delete <span className="font-bold text-blue-200">"{shortcut.name}"</span>? This cannot be undone.</AlertDialogDescription>
-                                                            <div className="flex gap-3 justify-end mt-4">
-                                                                <AlertDialogCancel className="border-2 border-slate-600 bg-slate-900 text-slate-200 hover:bg-slate-800">Cancel</AlertDialogCancel>
-                                                                <AlertDialogAction className="bg-red-600 hover:bg-red-700 text-white" onClick={() => handleRemoveShortcut(shortcut.name)}>Delete</AlertDialogAction>
-                                                            </div>
-                                                        </AlertDialogContent>
-                                                    </AlertDialog>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    )
-                                })}
-                                {filtered.length === 0 && (
-                                    <TableRow><TableCell colSpan={3} className="text-center py-12 text-slate-500">{searchQuery || activeTag ? "No shortcuts match your search." : "No shortcuts yet. Click \"New Shortcut\" to add one."}</TableCell></TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </ScrollArea>
-                </CardContent>
-            </Card>
-
+                                            )}
+                                        </td>
+                                        <td className="w-[230px] px-3 py-3 text-right align-top">
+                                            <div className="flex items-center justify-end gap-0.5">
+                                                <Button
+                                                    variant="success-ghost"
+                                                    size="icon-sm"
+                                                    onClick={(e) => { e.stopPropagation(); startRun(shortcut) }}
+                                                    title="Run"
+                                                >
+                                                    <Terminal className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon-sm"
+                                                    onClick={(e) => { e.stopPropagation(); setEditDialog({ open: true, shortcut }) }}
+                                                    title="Edit"
+                                                >
+                                                    <Edit2 className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon-sm"
+                                                    onClick={(e) => { e.stopPropagation(); handleDuplicate(shortcut.name) }}
+                                                    title="Duplicate"
+                                                >
+                                                    <Copy className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon-sm"
+                                                    onClick={(e) => { e.stopPropagation(); handleTogglePin(shortcut.name) }}
+                                                    title={shortcut.pinned ? "Unpin" : "Pin to top"}
+                                                    className={shortcut.pinned ? "text-pin hover:text-pin" : "text-fg-faint hover:text-pin"}
+                                                >
+                                                    <Star className={`h-4 w-4 ${shortcut.pinned ? "fill-pin" : ""}`} />
+                                                </Button>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <Button variant="danger-ghost" size="icon-sm" className="text-fg-faint" title="Delete">
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogTitle>Delete Shortcut</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            Delete <span className="font-semibold text-fg">{shortcut.name}</span>? This cannot be undone.
+                                                        </AlertDialogDescription>
+                                                        <div className="mt-2 flex justify-end gap-2">
+                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                            <AlertDialogAction className="bg-danger-strong hover:bg-danger" onClick={() => handleRemoveShortcut(shortcut.name)}>Delete</AlertDialogAction>
+                                                        </div>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <div className="flex h-full flex-col items-center justify-center gap-2.5 px-6 py-16 text-center">
+                            {allShortcuts.length === 0 ? (
+                                <>
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-edge bg-surface-2">
+                                        <Terminal className="h-5 w-5 text-fg-faint" />
+                                    </div>
+                                    <p className="text-[14px] font-medium text-fg-muted">No shortcuts yet.</p>
+                                    <p className="text-[12px] text-fg-faint">
+                                        Create one with <span className="font-medium text-fg-muted">New Shortcut</span> — or add aliases
+                                        with <span className="mono-cell text-accent-soft">ya</span> in your terminal.
+                                    </p>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-edge bg-surface-2">
+                                        <Search className="h-5 w-5 text-fg-faint" />
+                                    </div>
+                                    <p className="text-[14px] font-medium text-fg-muted">
+                                        No matches for <span className="mono-cell text-accent-soft">"{searchQuery}"</span>.
+                                    </p>
+                                    <p className="text-[12px] text-fg-faint">
+                                        Try a different name, command, or tag. Press <kbd className="kbd">esc</kbd> to clear.
+                                    </p>
+                                </>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </section>
         </div>
     )
 }

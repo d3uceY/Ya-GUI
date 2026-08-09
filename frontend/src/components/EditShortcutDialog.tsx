@@ -49,74 +49,62 @@ export default function EditShortcutDialog({ shortcut, open, onSave, onClose }: 
 
     return (
         <AlertDialog open={open}>
-            <AlertDialogContent className="border-2 bg-slate-800 border-slate-700 max-w-lg">
-                <AlertDialogTitle className="text-xl font-bold text-blue-100">
-                    Edit Shortcut
-                </AlertDialogTitle>
+            <AlertDialogContent className="max-w-lg">
+                <AlertDialogTitle>Edit Shortcut</AlertDialogTitle>
                 <AlertDialogDescription asChild>
-                    <div>
-                        <span className="text-slate-400 text-sm">Editing </span>
-                        <Badge className="font-bold text-sm px-2 py-0.5 bg-blue-900/50 text-blue-200 border border-blue-700">
+                    <div className="flex items-center gap-1.5">
+                        <span>Editing</span>
+                        <Badge variant="secondary" className="mono-cell font-semibold">
                             {shortcut.name}
                         </Badge>
                     </div>
                 </AlertDialogDescription>
 
-                <div className="space-y-4 mt-2">
+                <div className="mt-2 space-y-4">
                     <div>
-                        <label className="block text-sm font-bold text-blue-200 mb-1.5">Name</label>
+                        <label className="mb-1.5 block text-[13px] font-medium text-fg">Name</label>
                         <Input
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="e.g., gp, dev"
-                            className="border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500"
                             autoFocus
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-bold text-blue-200 mb-1.5">Command</label>
+                        <label className="mb-1.5 block text-[13px] font-medium text-fg">Command</label>
                         <Input
                             value={command}
                             onChange={(e) => setCommand(e.target.value)}
                             placeholder="e.g., git push origin main"
-                            className="border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500"
+                            className="font-mono"
                             onKeyDown={(e) => e.key === "Enter" && handleSave()}
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-bold text-blue-200 mb-1.5">
-                            Description <span className="font-normal text-slate-400">(optional)</span>
+                        <label className="mb-1.5 block text-[13px] font-medium text-fg">
+                            Description <span className="font-normal text-fg-faint">(optional)</span>
                         </label>
                         <Input
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="What does this shortcut do?"
-                            className="border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-bold text-blue-200 mb-1.5">
-                            Tags <span className="font-normal text-slate-400">(comma-separated)</span>
+                        <label className="mb-1.5 block text-[13px] font-medium text-fg">
+                            Tags <span className="font-normal text-fg-faint">(comma-separated)</span>
                         </label>
                         <Input
                             value={tags}
                             onChange={(e) => setTags(e.target.value)}
                             placeholder="e.g., git, npm, docker"
-                            className="border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500"
                         />
                     </div>
                 </div>
 
-                <div className="flex gap-3 justify-end mt-4">
-                    <AlertDialogCancel
-                        className="border-2 border-slate-600 bg-slate-900 text-slate-200 hover:bg-slate-800"
-                        onClick={onClose}
-                        disabled={saving}
-                    >
-                        Cancel
-                    </AlertDialogCancel>
+                <div className="mt-2 flex justify-end gap-2">
+                    <AlertDialogCancel onClick={onClose} disabled={saving}>Cancel</AlertDialogCancel>
                     <AlertDialogAction
-                        className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
                         onClick={handleSave}
                         disabled={!name.trim() || !command.trim() || saving}
                     >

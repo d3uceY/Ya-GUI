@@ -41,29 +41,27 @@ export default function DirectoryPickerDialog({ open, savedDirectories, onConfir
 
     return (
         <AlertDialog open={open}>
-            <AlertDialogContent className="border-2 bg-slate-800 border-slate-700 max-w-fit!">
-                <AlertDialogTitle className="text-xl font-bold text-blue-100">
-                    Choose a Directory
-                </AlertDialogTitle>
-                <AlertDialogDescription className="text-slate-300 text-sm">
+            <AlertDialogContent className="max-w-md">
+                <AlertDialogTitle>Choose a Directory</AlertDialogTitle>
+                <AlertDialogDescription>
                     Select a workspace directory to run the command in.
                 </AlertDialogDescription>
 
                 {savedDirectories.length > 0 && (
-                    <div className="space-y-2 my-2 max-h-48 overflow-y-auto">
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Saved Directories</p>
+                    <div className="my-2 max-h-48 space-y-1.5 overflow-y-auto">
+                        <p className="text-[11px] font-semibold tracking-wider text-fg-faint uppercase">Saved Directories</p>
                         {savedDirectories.map((dir) => (
                             <button
                                 key={dir.name}
                                 onClick={() => setSelectedPath(dir.path)}
-                                className={`w-full text-left px-3 py-2 rounded-lg border transition-colors ${
+                                className={`w-full rounded-lg border px-3 py-2 text-left transition-colors ${
                                     selectedPath === dir.path
-                                        ? "border-blue-500 bg-blue-900/40 text-blue-100"
-                                        : "border-slate-700 bg-slate-900/50 text-slate-300 hover:border-slate-500"
+                                        ? "border-accent bg-accent-tint text-accent-soft"
+                                        : "border-edge bg-surface text-fg-muted hover:border-edge-strong hover:text-fg-strong"
                                 }`}
                             >
-                                <p className="font-bold text-sm">{dir.name}</p>
-                                <p className="text-xs text-slate-500 truncate">{dir.path}</p>
+                                <p className="text-[13px] font-medium">{dir.name}</p>
+                                <p className="mono-cell truncate text-[11px] text-fg-faint">{dir.path}</p>
                             </button>
                         ))}
                     </div>
@@ -72,31 +70,22 @@ export default function DirectoryPickerDialog({ open, savedDirectories, onConfir
                 <Button
                     variant="ghost"
                     onClick={handleBrowse}
-                    className="w-full border-2 border-dashed border-slate-600 text-slate-300 hover:border-blue-500 hover:text-blue-500 mt-2"
+                    className="mt-2 w-full border border-dashed border-edge-strong text-fg-muted hover:border-accent-deep hover:text-accent-soft"
                 >
-                    <FolderOpen className="w-4 h-4 mr-2" />
+                    <FolderOpen className="h-4 w-4" />
                     Browse for directory…
                 </Button>
 
                 {selectedPath && (
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-900/50 border border-slate-600 mt-2">
-                        <FolderCheck className="w-4 h-4 text-green-400 flex-shrink-0" />
-                        <p className="text-sm text-green-300 truncate">{selectedPath}</p>
+                    <div className="mt-2 flex items-center gap-2 rounded-lg border border-edge bg-surface-2 px-3 py-2">
+                        <FolderCheck className="h-4 w-4 shrink-0 text-success" />
+                        <p className="mono-cell truncate text-[12px] text-success">{selectedPath}</p>
                     </div>
                 )}
 
-                <div className="flex gap-3 justify-end mt-2">
-                    <AlertDialogCancel
-                        className="border-2 border-slate-600 bg-slate-900 hover:text-white! text-white hover:bg-slate-800"
-                        onClick={handleCancel}
-                    >
-                        Cancel
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                        className="bg-green-600 hover:bg-green-700 text-white disabled:opacity-50"
-                        onClick={handleConfirm}
-                        disabled={!selectedPath}
-                    >
+                <div className="mt-2 flex justify-end gap-2">
+                    <AlertDialogCancel onClick={handleCancel}>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleConfirm} disabled={!selectedPath}>
                         Run
                     </AlertDialogAction>
                 </div>

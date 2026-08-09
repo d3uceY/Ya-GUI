@@ -1,8 +1,8 @@
 ﻿import { useState, useEffect } from "react"
-import { Download, ExternalLink, Terminal, FolderOpen, Plus, Trash2, Power } from "lucide-react"
+import { Download, Upload, ExternalLink, Terminal, FolderOpen, Plus, Trash2, Power } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -28,6 +28,14 @@ const TERMINAL_OPTIONS = [
     { value: "cmd", label: "Command Prompt (cmd)" },
     { value: "bash", label: "Bash / Unix terminal" },
 ]
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+    return (
+        <h3 className="px-1 pt-6 pb-2 text-[11px] font-semibold tracking-wider text-fg-faint uppercase">
+            {children}
+        </h3>
+    )
+}
 
 export default function SettingsPage() {
     const { currentVersion, updateAvailable } = useVersion()
@@ -72,195 +80,180 @@ export default function SettingsPage() {
     const savedDirs: SavedDir[] = config.savedDirectories ?? []
 
     return (
-        <div className="flex flex-col h-full p-8 pt-4 max-w-4xl mx-auto space-y-6 overflow-y-auto">
-
-            {/* Terminal Preference */}
-            <Card className="border-2 bg-slate-800/50 overflow-hidden pt-0 border-slate-700">
-                <CardHeader className="border-b border-slate-700 pt-6 bg-slate-900/50">
-                    <CardTitle className="text-xl text-blue-100 flex items-center gap-2">
-                        <Terminal className="w-5 h-5" />
-                        Terminal Preference
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-bold text-blue-200">Preferred Terminal</p>
-                            <p className="text-xs text-slate-400 mt-0.5">Which terminal to open when running a shortcut</p>
+        <div className="flex h-full flex-col overflow-y-auto p-4">
+            <div className="mx-auto w-full max-w-3xl space-y-3 pb-12">
+                <SectionLabel>Terminal &amp; Startup</SectionLabel>
+                <Card>
+                    <CardContent className="p-0">
+                        <div className="flex items-center justify-between gap-6 px-5 py-4">
+                            <div className="min-w-0">
+                                <p className="flex items-center gap-2 text-[13px] font-medium text-fg">
+                                    <Terminal className="h-4 w-4 shrink-0 text-fg-faint" />
+                                    Preferred Terminal
+                                </p>
+                                <p className="mt-0.5 text-[12px] text-fg-faint">Which terminal to open when running a shortcut</p>
+                            </div>
+                            <Select value={config.preferredTerminal ?? "auto"} onValueChange={handleTerminalChange}>
+                                <SelectTrigger className="w-48 sm:w-56">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {TERMINAL_OPTIONS.map((opt) => (
+                                        <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
-                        <Select value={config.preferredTerminal ?? "auto"} onValueChange={handleTerminalChange}>
-                            <SelectTrigger className="w-52 border-2 border-slate-600 bg-slate-900/50 text-blue-200 focus:border-blue-500">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="bg-slate-800 border-slate-600">
-                                {TERMINAL_OPTIONS.map((opt) => (
-                                    <SelectItem key={opt.value} value={opt.value} className="text-blue-200 focus:bg-slate-700">
-                                        {opt.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </CardContent>
-            </Card>
 
-            {/* Start on Boot */}
-            <Card className="border-2 bg-slate-800/50 overflow-hidden pt-0 border-slate-700">
-                <CardHeader className="border-b border-slate-700 pt-6 bg-slate-900/50">
-                    <CardTitle className="text-xl text-blue-100 flex items-center gap-2">
-                        <Power className="w-5 h-5" />
-                        Start on Boot
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                    <div className="flex items-center justify-between py-3 px-4 rounded-lg bg-slate-900/50 border border-slate-700">
-                        <div>
-                            <p className="text-sm font-bold text-blue-200">Launch YaGUI at login</p>
-                            <p className="text-xs text-slate-400 mt-0.5">Automatically start when you log into your computer</p>
+                        <div className="flex items-center justify-between gap-6 border-t border-edge px-5 py-4">
+                            <div className="min-w-0">
+                                <p className="flex items-center gap-2 text-[13px] font-medium text-fg">
+                                    <Power className="h-4 w-4 shrink-0 text-fg-faint" />
+                                    Start on Boot
+                                </p>
+                                <p className="mt-0.5 text-[12px] text-fg-faint">Automatically launch YaGUI when you log in</p>
+                            </div>
+                            <Switch checked={startOnBoot} onCheckedChange={handleBootToggle} aria-label="Start on boot" />
                         </div>
-                        <Switch
-                            checked={startOnBoot}
-                            onCheckedChange={handleBootToggle}
-                            className="data-[state=checked]:bg-blue-600"
-                        />
-                    </div>
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Card>
 
-            {/* Saved Directories */}
-            <Card className="border-2 bg-slate-800/50 overflow-hidden pt-0 border-slate-700">
-                <CardHeader className="border-b border-slate-700 pt-6 bg-slate-900/50">
-                    <CardTitle className="text-xl text-blue-100 flex items-center gap-2">
-                        <FolderOpen className="w-5 h-5" />
-                        Saved Directories
-                    </CardTitle>
-                    <p className="text-sm text-slate-400 mt-1">Named workspace directories that appear when running a shortcut</p>
-                </CardHeader>
-                <CardContent className="pt-6 space-y-4">
-                    {savedDirs.length > 0 ? (
-                        <div className="space-y-2">
-                            {savedDirs.map((dir) => (
-                                <div key={dir.name} className="flex items-center gap-3 px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700">
-                                    <div className="flex-1 min-w-0">
-                                        <p className="font-bold text-sm text-blue-200">{dir.name}</p>
-                                        <p className="text-xs text-slate-400 truncate">{dir.path}</p>
+                <SectionLabel>Saved Directories</SectionLabel>
+                <Card>
+                    <CardContent className="p-0">
+                        {savedDirs.length === 0 ? (
+                            <p className="px-5 py-4 text-[12px] text-fg-faint">No saved directories yet.</p>
+                        ) : (
+                            savedDirs.map((dir) => (
+                                <div key={dir.name} className="flex items-center gap-3 border-b border-edge px-5 py-3 last:border-b-0">
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-[13px] font-medium text-fg">{dir.name}</p>
+                                        <p className="mono-cell truncate text-[11px] text-fg-faint">{dir.path}</p>
                                     </div>
                                     <AlertDialog>
                                         <AlertDialogTrigger asChild>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-red-400 hover:bg-red-900/30 hover:text-red-300 flex-shrink-0">
-                                                <Trash2 className="w-4 h-4" />
+                                            <Button variant="danger-ghost" size="icon-sm" title={`Remove ${dir.name}`}>
+                                                <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </AlertDialogTrigger>
-                                        <AlertDialogContent className="border-2 bg-slate-800 border-slate-700">
-                                            <AlertDialogTitle className="text-xl font-bold text-blue-100">Remove Directory</AlertDialogTitle>
-                                            <AlertDialogDescription className="text-base text-slate-300">
-                                                Remove <span className="font-bold text-blue-200">"{dir.name}"</span> from saved directories?
+                                        <AlertDialogContent>
+                                            <AlertDialogTitle>Remove Directory</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Remove <span className="font-semibold text-fg">{dir.name}</span> from saved directories?
                                             </AlertDialogDescription>
-                                            <div className="flex gap-3 justify-end mt-4">
-                                                <AlertDialogCancel className="border-2 border-slate-600 bg-slate-900 text-slate-200 hover:bg-slate-800">Cancel</AlertDialogCancel>
-                                                <AlertDialogAction className="bg-red-600 hover:bg-red-700 text-white" onClick={() => handleRemoveDirectory(dir.name)}>Remove</AlertDialogAction>
+                                            <div className="mt-2 flex justify-end gap-2">
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction className="bg-danger-strong hover:bg-danger" onClick={() => handleRemoveDirectory(dir.name)}>Remove</AlertDialogAction>
                                             </div>
                                         </AlertDialogContent>
                                     </AlertDialog>
                                 </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="text-sm text-slate-500 px-1">No saved directories yet.</p>
-                    )}
+                            ))
+                        )}
 
-                    <div className="border-t border-slate-700 pt-4 space-y-3">
-                        <p className="text-sm font-bold text-blue-200">Add New Directory</p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <Input
-                                placeholder='Name (e.g., "My Project")'
-                                value={newDirName}
-                                onChange={(e) => setNewDirName(e.target.value)}
-                                className="border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500 h-10"
-                            />
-                            <div className="flex gap-2">
+                        <div className="border-t border-edge px-5 py-4">
+                            <p className="mb-2 text-[12px] font-medium text-fg-muted">Add New Directory</p>
+                            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                                 <Input
-                                    placeholder="Path"
-                                    value={newDirPath}
-                                    onChange={(e) => setNewDirPath(e.target.value)}
-                                    className="flex-1 border-2 border-slate-600 bg-slate-900/50 text-blue-200 placeholder:text-slate-500 focus:border-blue-500 h-10"
+                                    placeholder='Name (e.g., "My Project")'
+                                    value={newDirName}
+                                    onChange={(e) => setNewDirName(e.target.value)}
                                 />
-                                <Button onClick={handleBrowseDir} variant="ghost" size="icon" className="h-10 w-10 border-2 border-slate-600 text-slate-300 hover:border-blue-500 hover:text-blue-200 flex-shrink-0">
-                                    <FolderOpen className="w-4 h-4" />
-                                </Button>
+                                <div className="flex gap-2">
+                                    <Input
+                                        placeholder="Path"
+                                        value={newDirPath}
+                                        onChange={(e) => setNewDirPath(e.target.value)}
+                                        className="min-w-0 flex-1"
+                                    />
+                                    <Button variant="outline" size="icon" onClick={handleBrowseDir} title="Browse for directory" className="shrink-0">
+                                        <FolderOpen className="h-4 w-4" />
+                                    </Button>
+                                </div>
                             </div>
+                            <Button
+                                onClick={handleAddDirectory}
+                                disabled={!newDirName.trim() || !newDirPath.trim()}
+                                size="sm"
+                                className="mt-3"
+                            >
+                                <Plus className="h-4 w-4" />
+                                Add Directory
+                            </Button>
                         </div>
-                        <Button
-                            onClick={handleAddDirectory}
-                            disabled={!newDirName.trim() || !newDirPath.trim()}
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold border-2 border-blue-500 hover:border-blue-400 disabled:opacity-50"
-                        >
-                            <Plus className="w-4 h-4 mr-2" />
-                            Add Directory
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Card>
 
-            {/* Data Management */}
-            <Card className="border-2 bg-slate-800/50 overflow-hidden pt-0 border-slate-700">
-                <CardHeader className="border-b border-slate-700 pt-6 bg-slate-900/50">
-                    <CardTitle className="text-xl text-blue-100">Data Management</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Button onClick={() => ExportShortcuts()} className="bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-bold shadow-lg shadow-blue-900/50 border-2 border-blue-500 hover:border-blue-400">
-                            Export Shortcuts
-                        </Button>
-                        <Button onClick={() => ImportShortcuts()} className="bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-bold shadow-lg shadow-blue-900/50 border-2 border-blue-500 hover:border-blue-400">
-                            Import Shortcuts
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
+                <SectionLabel>Data</SectionLabel>
+                <Card>
+                    <CardContent className="p-0">
+                        <div className="grid grid-cols-1 gap-3 p-5 sm:grid-cols-2">
+                            <Button variant="outline" className="justify-start py-5" onClick={() => ExportShortcuts()}>
+                                <Download className="h-4 w-4 text-accent-soft" />
+                                Export Shortcuts
+                            </Button>
+                            <Button variant="outline" className="justify-start py-5" onClick={() => ImportShortcuts()}>
+                                <Upload className="h-4 w-4 text-accent-soft" />
+                                Import Shortcuts
+                            </Button>
+                        </div>
+                        <p className="px-5 pb-5 text-[11px] text-fg-faint">
+                            Shortcuts live in your <span className="mono-cell text-fg-muted">ya</span> CLI config — export merges back, import merges from a file.
+                        </p>
+                    </CardContent>
+                </Card>
 
-            {/* About */}
-            <Card className="border-2 bg-slate-800/50 pt-0 overflow-hidden border-slate-700">
-                <CardHeader className="border-b border-slate-700 pt-6 bg-slate-900/50">
-                    <CardTitle className="text-xl text-blue-100">About</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6 pt-6">
-                    <div className="flex items-center justify-between py-3 px-4 rounded-lg bg-slate-900/50 border border-slate-700">
-                        <span className="text-sm font-bold text-slate-400">Version</span>
-                        <span className="text-base font-bold text-blue-200">{currentVersion}</span>
-                    </div>
-                    {updateAvailable && (
-                        <div className="p-4 rounded-lg bg-blue-900/30 border-2 border-blue-500">
-                            <div className="flex items-start justify-between mb-3">
-                                <div>
-                                    <span className="text-base font-bold text-blue-100 block">Update Available!</span>
-                                    <Badge className="mt-1 bg-blue-600 text-white text-xs">{updateAvailable.version}</Badge>
+                <SectionLabel>About</SectionLabel>
+                <Card>
+                    <CardContent className="p-0">
+                        <div className="flex items-center justify-between gap-6 px-5 py-4">
+                            <p className="text-[13px] font-medium text-fg">Version</p>
+                            <span className="mono-cell text-[13px] text-fg-muted">{currentVersion || "—"}</span>
+                        </div>
+
+                        {updateAvailable && (
+                            <div className="border-t border-edge px-5 py-4">
+                                <div className="rounded-lg border border-accent-deep/70 bg-accent-tint/30 p-4">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <span className="text-[13px] font-semibold text-fg-strong">Update available</span>
+                                        <Badge variant="secondary">{updateAvailable.version}</Badge>
+                                    </div>
+                                    <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                                        <span className="text-[12px] text-fg-faint">
+                                            Released {formatReleaseDate(updateAvailable.releaseDate)}
+                                        </span>
+                                        <a href={updateAvailable.releaseUrl} target="_blank" rel="noopener noreferrer">
+                                            <Button size="sm">
+                                                <ExternalLink className="h-4 w-4" />
+                                                Download Update
+                                            </Button>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="space-y-2 mb-4">
-                                <div className="flex items-center justify-between py-2 px-3 rounded bg-slate-900/50 border border-slate-700">
-                                    <span className="text-xs font-bold text-slate-400">Release Date</span>
-                                    <span className="text-sm text-blue-200">{formatReleaseDate(updateAvailable.releaseDate)}</span>
-                                </div>
-                            </div>
-                            <a href={updateAvailable.releaseUrl} target="_blank" rel="noopener noreferrer">
-                                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-900/50 border-2 border-blue-500 hover:border-blue-400">
-                                    <ExternalLink className="w-4 h-4 mr-2" />
-                                    Download Update
-                                </Button>
+                        )}
+
+                        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-edge px-5 py-4">
+                            <a
+                                href="https://github.com/d3uceY/Ya-GUI"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent-soft hover:underline"
+                            >
+                                Website <ExternalLink className="h-3.5 w-3.5" />
+                            </a>
+                            <a
+                                href="https://github.com/d3uceY/Ya-CLI/releases/latest"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent-soft hover:underline"
+                            >
+                                Download CLI <Download className="h-3.5 w-3.5" />
                             </a>
                         </div>
-                    )}
-                    <div className="flex items-center gap-4">
-                        <a href="https://github.com/d3uceY/Ya-GUI" target="_blank" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold hover:underline">
-                            Visit Website <ExternalLink className="w-4 h-4" />
-                        </a>
-                        <a href="https://github.com/d3uceY/Ya-CLI/releases/latest" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold hover:underline">
-                            Download CLI <Download className="w-4 h-4" />
-                        </a>
-                    </div>
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     )
 }
