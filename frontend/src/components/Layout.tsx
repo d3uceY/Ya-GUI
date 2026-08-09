@@ -37,9 +37,8 @@ export default function Layout() {
 
       {/* Title bar */}
       <header className="flex h-12 shrink-0 items-center gap-2.5 border-b border-edge bg-surface px-4">
-        <img src="/ya.png" alt="Ya" className="h-6 w-6 rounded" />
-        <span className="mono-cell text-[13px] font-bold tracking-tight text-accent-soft">ya</span>
-        <span className="h-4 w-px bg-edge-strong" aria-hidden />
+        <img src="/ya.png" alt="Ya" className="h-6" />
+        <span className="h-8 w-px bg-edge-strong" aria-hidden />
         <h1 className="truncate text-[13px] font-medium text-fg-muted">{getPageTitle()}</h1>
         <span className="mono-cell ml-auto hidden text-[11px] text-fg-faint sm:inline">
           {currentVersion || "—"}
